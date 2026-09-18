@@ -14,17 +14,21 @@ import {
   X
 } from 'lucide-react';
 
+import { useAuth } from '../../context/AuthContext';
+
 export function MobileBottomNav({ activeTab, setActiveTab }) {
+  const { canAccess, user, roleMeta } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const mainTabs = [
+  const rawMainTabs = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'orders', label: 'Orders', icon: ShoppingBag, badge: '3' },
     { id: 'products', label: 'Products', icon: Package },
+    { id: 'rider-portal', label: 'Rider Portal', icon: Truck },
     { id: 'storefront', label: 'Storefront', icon: Store },
   ];
 
-  const extraMenuItems = [
+  const rawExtraMenuItems = [
     { id: 'categories', label: 'Categories Taxonomy', icon: Layers },
     { id: 'hero-media', label: 'Hero Video Manager', icon: Video },
     { id: 'shipping', label: 'Delivery Zones', icon: Truck },
@@ -32,6 +36,9 @@ export function MobileBottomNav({ activeTab, setActiveTab }) {
     { id: 'settings', label: 'Store Settings', icon: Settings },
     { id: 'live-preview', label: 'Live Store Preview', icon: Eye }
   ];
+
+  const mainTabs = rawMainTabs.filter(tab => canAccess(tab.id)).slice(0, 4);
+  const extraMenuItems = rawExtraMenuItems.filter(item => canAccess(item.id));
 
   const handleExtraClick = (tabId) => {
     setActiveTab(tabId);

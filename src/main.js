@@ -1845,7 +1845,7 @@ function renderModalsHtml(cartCount, cartSubtotal, totalSavings) {
       ${totalSavings > 0 ? `
         <div class="wholesale-savings-banner">
           <i class="fa-solid fa-piggy-bank" style="font-size: 18px;"></i>
-          <span>🎉 You saved ${formatPrice(totalSavings)} buying at Factory Rates!</span>
+          <span>You saved ${formatPrice(totalSavings)} buying at Factory Direct Rates!</span>
         </div>
       ` : ''}
 

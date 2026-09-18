@@ -129,9 +129,16 @@ export async function initDb() {
       role TEXT DEFAULT 'staff',
       phone TEXT,
       status TEXT DEFAULT 'active',
+      wholesale_tier TEXT DEFAULT 'Standard',
       last_active TEXT
     )
   `);
+
+  try {
+    await dbRun("ALTER TABLE staff_users ADD COLUMN wholesale_tier TEXT DEFAULT 'Standard'");
+  } catch (e) {
+    // Column already exists, safe to continue
+  }
 
   // Create RFQ Quotes table
   await dbRun(`
@@ -157,10 +164,56 @@ export async function initDb() {
     )
   `);
 
+  // Create Delivery Zones table
+  await dbRun(`
+    CREATE TABLE IF NOT EXISTS delivery_zones (
+      id TEXT PRIMARY KEY,
+      zone_name TEXT NOT NULL,
+      delivery_fee REAL DEFAULT 0,
+      estimated_hours TEXT,
+      is_active INTEGER DEFAULT 1
+    )
+  `);
+
+  // Create Site Settings table
+  await dbRun(`
+    CREATE TABLE IF NOT EXISTS site_settings (
+      key TEXT PRIMARY KEY,
+      value_json TEXT NOT NULL
+    )
+  `);
+
   await seedData();
 }
 
 async function seedData() {
+  // Seed Staff Users if empty
+  const existingStaff = await dbAll("SELECT COUNT(*) as count FROM staff_users");
+  if (existingStaff[0].count === 0) {
+    const staffUsers = [
+      { id: "usr-admin-01", full_name: "Akua Mansa", email: "admin@akuamarket.com", role: "admin", phone: "+233501234567", status: "active", last_active: "Just Now" },
+      { id: "usr-staff-02", full_name: "Kofi Mensah", email: "dispatch@akuamarket.com", role: "staff", phone: "+233244889900", status: "active", last_active: "10 mins ago" },
+      { id: "usr-staff-03", full_name: "Abena Osei", email: "inventory@akuamarket.com", role: "staff", phone: "+233550112233", status: "active", last_active: "1 hour ago" }
+    ];
+    for (const s of staffUsers) {
+      await dbRun("INSERT OR REPLACE INTO staff_users (id, full_name, email, role, phone, status, last_active) VALUES (?, ?, ?, ?, ?, ?, ?)", [s.id, s.full_name, s.email, s.role, s.phone, s.status, s.last_active]);
+    }
+  }
+
+  // Seed Delivery Zones if empty
+  const existingZones = await dbAll("SELECT COUNT(*) as count FROM delivery_zones");
+  if (existingZones[0].count === 0) {
+    const defaultZones = [
+      { id: "1", zone_name: "Central Accra Metro", delivery_fee: 25.00, estimated_hours: "Same Day (2-4 Hrs)", is_active: 1 },
+      { id: "2", zone_name: "Tema & Spintex Corridor", delivery_fee: 35.00, estimated_hours: "Same Day (4-6 Hrs)", is_active: 1 },
+      { id: "3", zone_name: "East Legon & Madina Hub", delivery_fee: 30.00, estimated_hours: "Same Day (3-5 Hrs)", is_active: 1 },
+      { id: "4", zone_name: "Kumasi & Regional Cities", delivery_fee: 60.00, estimated_hours: "Next Day (24 Hrs)", is_active: 1 }
+    ];
+    for (const z of defaultZones) {
+      await dbRun("INSERT OR REPLACE INTO delivery_zones (id, zone_name, delivery_fee, estimated_hours, is_active) VALUES (?, ?, ?, ?, ?)", [z.id, z.zone_name, z.delivery_fee, z.estimated_hours, z.is_active]);
+    }
+  }
+
   const existingProducts = await dbAll("SELECT COUNT(*) as count FROM products");
   if (existingProducts[0].count > 0) {
     console.log("Database already seeded with products.");

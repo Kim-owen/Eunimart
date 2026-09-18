@@ -1,1 +1,28 @@
-{"name":"akua-market","private":true,"version":"1.1.0","type":"module","scripts":{"dev":"vite","build":"vite build","preview":"vite preview"},"dependencies":{"@supabase/supabase-js":"^2.116.0","@vitejs/plugin-react":"^5.1.0","clsx":"^2.1.1","lucide-react":"^1.46.0","react":"^19.3.0","react-dom":"^19.3.0","react-is":"^19.3.0","recharts":"^3.10.1","sonner":"^2.0.8","tailwind-merge":"^3.7.0","vite":"^7.1.0"}}
+{
+  "name": "akua-market",
+  "private": true,
+  "version": "1.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3030 --strictPort",
+    "build": "vite build",
+    "preview": "vite preview --port 3030"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.116.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.46.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-is": "^19.3.0",
+    "recharts": "^3.10.1",
+    "sonner": "^2.0.8",
+    "tailwind-merge": "^3.7.0",
+    "vite": "^7.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "tailwindcss": "^4.0.0"
+  }
+}

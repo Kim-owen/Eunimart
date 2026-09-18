@@ -6,7 +6,8 @@ const app = express();
 const PORT = process.env.PORT || 5050;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
 // Initialize Database before starting server routes
 initDb().then(() => {
@@ -108,11 +109,16 @@ app.get('/api/products', async (req, res) => {
 
     const rows = await dbAll(sql, params);
     
-    let products = rows.map(r => ({
-      ...r,
-      isHot: Boolean(r.is_hot),
-      tiers: JSON.parse(r.tiers_json || '[]')
-    }));
+    let products = rows.map(r => {
+      const tiers = JSON.parse(r.tiers_json || '[]');
+      return {
+        ...r,
+        price: tiers[0]?.price || 50,
+        isHot: Boolean(r.is_hot),
+        is_active: true,
+        tiers
+      };
+    });
 
     if (maxPrice) {
       const limit = Number(maxPrice);
@@ -143,8 +149,50 @@ app.get('/api/products/:id', async (req, res) => {
     
     res.json({
       ...prod,
+      price: tiers[0]?.price || 50,
       isHot: Boolean(prod.is_hot),
+      is_active: true,
       tiers
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get All Orders (for Admin & Rider Logistics)
+app.get('/api/orders', async (req, res) => {
+  try {
+    const orders = await dbAll("SELECT * FROM orders ORDER BY rowid DESC");
+    const parsed = orders.map(o => ({
+      ...o,
+      order_number: o.id,
+      customer_name: o.buyer_name,
+      customer_phone: o.momo_number,
+      shipping_address: o.location,
+      delivery_zone_name: o.location,
+      created_at: o.date,
+      payment_method: o.momo_provider ? `${o.momo_provider} (Settled)` : 'Paystack MoMo',
+      items: JSON.parse(o.items_json || '[]')
+    }));
+    res.json(parsed);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get Single Order by ID
+app.get('/api/orders/:id', async (req, res) => {
+  try {
+    const order = await dbGet("SELECT * FROM orders WHERE id = ?", [req.params.id]);
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+    res.json({
+      ...order,
+      order_number: order.id,
+      customer_name: order.buyer_name,
+      customer_phone: order.momo_number,
+      shipping_address: order.location,
+      created_at: order.date,
+      items: JSON.parse(order.items_json || '[]')
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -261,6 +309,16 @@ app.post('/api/delivery-zones', async (req, res) => {
   }
 });
 
+// Delete Delivery Zone
+app.delete('/api/delivery-zones/:id', async (req, res) => {
+  try {
+    await dbRun("DELETE FROM delivery_zones WHERE id = ?", [req.params.id]);
+    res.json({ success: true, id: req.params.id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get Site Settings by Key
 app.get('/api/site-settings', async (req, res) => {
   try {
@@ -331,10 +389,12 @@ app.post('/api/products/manage', async (req, res) => {
     const prodId = id || `p-${Date.now()}`;
     const productSku = sku || `SKU-${Math.floor(10000 + Math.random() * 90000)}`;
 
+    const finalImage = (image !== undefined && image !== null) ? image : '';
+
     await dbRun(`
       INSERT OR REPLACE INTO products (id, title, category, subcategory, hub, size, factory, stock, rating, reviews, image, is_hot)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 4.8, 10, ?, ?)
-    `, [prodId, title, category || 'Groceries & Food Staples', subcategory || 'Staples', hub || 'Supermarket', size || 'Pack', factory || 'Akua Direct', Number(stock) || 50, image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80', is_hot ? 1 : 0]);
+    `, [prodId, title, category || 'Groceries & Food Staples', subcategory || 'Staples', hub || 'Supermarket', size || 'Pack', factory || 'Akua Direct', Number(stock) || 50, finalImage, is_hot ? 1 : 0]);
 
     // Handle Tier pricing
     if (price) {
@@ -501,13 +561,40 @@ app.get('/api/staff', async (req, res) => {
 // Save or Update Staff User
 app.post('/api/staff', async (req, res) => {
   try {
-    const { id, full_name, email, role, phone, status } = req.body;
+    const { id, full_name, email, role, phone, status, wholesale_tier } = req.body;
     const staffId = id || `usr-staff-${Date.now()}`;
     await dbRun(`
-      INSERT OR REPLACE INTO staff_users (id, full_name, email, role, phone, status, last_active)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `, [staffId, full_name, email, role || 'staff', phone || '', status || 'active', 'Just now']);
+      INSERT OR REPLACE INTO staff_users (id, full_name, email, role, phone, status, wholesale_tier, last_active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `, [staffId, full_name, email, role || 'staff', phone || '', status || 'active', wholesale_tier || 'Standard', 'Just now']);
     res.json({ success: true, id: staffId });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Assign or Update Staff Role & Wholesale Tier
+app.patch('/api/staff/:id/role', async (req, res) => {
+  try {
+    const { role, wholesale_tier, status } = req.body;
+    const staffId = req.params.id;
+    let sql = "UPDATE staff_users SET role = ?";
+    let params = [role];
+
+    if (wholesale_tier !== undefined) {
+      sql += ", wholesale_tier = ?";
+      params.push(wholesale_tier);
+    }
+    if (status) {
+      sql += ", status = ?";
+      params.push(status);
+    }
+    sql += ", last_active = 'Role updated just now' WHERE id = ?";
+    params.push(staffId);
+
+    await dbRun(sql, params);
+    console.log(`[RBAC] Assigned role '${role}' (Tier: '${wholesale_tier || 'Standard'}') to user #${staffId}`);
+    res.json({ success: true, id: staffId, role, wholesale_tier });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

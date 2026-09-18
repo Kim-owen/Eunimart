@@ -1,7 +1,7 @@
 // AkuaMarket - D2C E-Commerce Admin & Backend API Client Service
 import { createClient } from '@supabase/supabase-js';
 
-const API_BASE_URL = 'http://localhost:5050/api';
+const API_BASE_URL = import.meta.env?.VITE_API_BASE_URL || 'http://localhost:5050/api';
 
 // Initialize Supabase Client with fallback demo credentials if not provided in env
 const SUPABASE_URL = import.meta.env?.VITE_SUPABASE_URL || 'https://demo-akuamarket.supabase.co';
@@ -115,6 +115,12 @@ export async function saveDeliveryZoneApi(zoneData) {
   }, { success: true, id: zoneData.id || `zone-${Date.now()}` });
 }
 
+export async function deleteDeliveryZoneApi(zoneId) {
+  return apiRequest(`/delivery-zones/${zoneId}`, {
+    method: 'DELETE'
+  }, { success: true, id: zoneId });
+}
+
 // 5. STAFF & ACCESS CONTROL API
 export async function fetchStaffMembersApi() {
   return apiRequest('/staff', {}, [
@@ -135,6 +141,13 @@ export async function deleteStaffMemberApi(staffId) {
   return apiRequest(`/staff/${staffId}`, {
     method: 'DELETE'
   }, { success: true, id: staffId });
+}
+
+export async function updateStaffRoleApi(staffId, role, wholesale_tier) {
+  return apiRequest(`/staff/${staffId}/role`, {
+    method: 'PATCH',
+    body: JSON.stringify({ role, wholesale_tier })
+  }, { success: true, id: staffId, role, wholesale_tier });
 }
 
 // 6. RFQ / WHOLESALE QUOTES API
