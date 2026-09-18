@@ -1,10 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { KpiCard } from './KpiCard';
 import { RevenueChart } from './RevenueChart';
 import { ActivityFeed } from './ActivityFeed';
+import { fetchAnalyticsApi } from '../../services/api';
 import { DollarSign, ShoppingBag, Clock, Users, ArrowUpRight, Plus, Package, Truck, Palette } from 'lucide-react';
 
 export function AnalyticsDashboard({ setActiveTab }) {
+  const [analytics, setAnalytics] = useState(null);
+
+  useEffect(() => {
+    async function loadStats() {
+      const data = await fetchAnalyticsApi();
+      if (data) setAnalytics(data);
+    }
+    loadStats();
+  }, []);
+
+  const totalRev = analytics?.summary?.totalRevenue || 186400;
+  const totalOrd = analytics?.summary?.totalOrders || 1248;
+  const pendingOrd = analytics?.summary?.pendingOrders || 14;
+  const activeStaff = analytics?.summary?.activeStaff || 3;
+
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Top Banner & Quick Shortcuts */}
@@ -43,7 +59,7 @@ export function AnalyticsDashboard({ setActiveTab }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
         <KpiCard
           title="Total Gross Revenue"
-          value="GH₵ 186,400.00"
+          value={`GH₵ ${Number(totalRev).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
           change="+24.8%"
           isPositive={true}
           icon={DollarSign}
@@ -51,7 +67,7 @@ export function AnalyticsDashboard({ setActiveTab }) {
         />
         <KpiCard
           title="Total Orders Processed"
-          value="1,248"
+          value={totalOrd.toLocaleString()}
           change="+18.2%"
           isPositive={true}
           icon={ShoppingBag}
@@ -59,15 +75,15 @@ export function AnalyticsDashboard({ setActiveTab }) {
         />
         <KpiCard
           title="Pending Fulfillments"
-          value="14 Orders"
+          value={`${pendingOrd} Orders`}
           change="-5.4%"
           isPositive={true}
           icon={Clock}
           color="indigo"
         />
         <KpiCard
-          title="Active Customer Base"
-          value="4,820"
+          title="Active Staff & Riders"
+          value={`${activeStaff} Members`}
           change="+12.5%"
           isPositive={true}
           icon={Users}

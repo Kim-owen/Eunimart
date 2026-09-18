@@ -3,7 +3,7 @@ import { GlassCard } from '../ui/GlassCard';
 import { OrderStatusTabs } from './OrderStatusTabs';
 import { OrderDetailDrawer } from './OrderDetailDrawer';
 import { DispatchModal } from './DispatchModal';
-import { fetchOrdersApi, updateOrderStatusApi } from '../../services/api';
+import { fetchOrdersApi, updateOrderStatusApi, dispatchOrderApi, deleteOrderApi } from '../../services/api';
 import { toast } from 'sonner';
 import { Search, Eye, Truck, CheckCircle2, Clock, ShieldCheck, RefreshCw } from 'lucide-react';
 
@@ -105,7 +105,13 @@ export function OrderManager() {
     setDispatchOrder(order);
   };
 
-  const handleConfirmDispatch = (orderId, riderName, riderPhone) => {
+  const handleConfirmDispatch = async (orderId, riderName, riderPhone) => {
+    await dispatchOrderApi(orderId, {
+      courierName: riderName,
+      courierPhone: riderPhone,
+      vehicleType: 'Motorbike Express',
+      status: 'out_for_delivery'
+    });
     setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'out_for_delivery', courier_name: riderName } : o));
     toast.success(`Logistics dispatch active for Order #${orderId}`);
   };

@@ -111,7 +111,25 @@ export async function initDb() {
       status TEXT,
       date TEXT,
       momo_number TEXT,
-      momo_provider TEXT
+      momo_provider TEXT,
+      courier_name TEXT,
+      courier_phone TEXT,
+      vehicle_type TEXT,
+      tracking_number TEXT,
+      dispatch_notes TEXT
+    )
+  `);
+
+  // Create Staff Users & Role Access table
+  await dbRun(`
+    CREATE TABLE IF NOT EXISTS staff_users (
+      id TEXT PRIMARY KEY,
+      full_name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      role TEXT DEFAULT 'staff',
+      phone TEXT,
+      status TEXT DEFAULT 'active',
+      last_active TEXT
     )
   `);
 
@@ -283,5 +301,16 @@ async function seedData() {
     await dbRun("INSERT OR REPLACE INTO depots (id, name, area, top_pos, left_pos, eta) VALUES (?, ?, ?, ?, ?, ?)", [d.id, d.name, d.area, d.top_pos, d.left_pos, d.eta]);
   }
 
-  console.log("Database successfully seeded with initial supermarket & mall records.");
+  // Seed Staff Users
+  const staffUsers = [
+    { id: "usr-admin-01", full_name: "Akua Mansa", email: "admin@akuamarket.com", role: "admin", phone: "+233501234567", status: "active", last_active: "Just Now" },
+    { id: "usr-staff-02", full_name: "Kofi Mensah", email: "dispatch@akuamarket.com", role: "staff", phone: "+233244889900", status: "active", last_active: "10 mins ago" },
+    { id: "usr-staff-03", full_name: "Abena Osei", email: "inventory@akuamarket.com", role: "staff", phone: "+233550112233", status: "active", last_active: "1 hour ago" }
+  ];
+
+  for (const s of staffUsers) {
+    await dbRun("INSERT OR REPLACE INTO staff_users (id, full_name, email, role, phone, status, last_active) VALUES (?, ?, ?, ?, ?, ?, ?)", [s.id, s.full_name, s.email, s.role, s.phone, s.status, s.last_active]);
+  }
+
+  console.log("Database successfully seeded with initial supermarket, mall & staff records.");
 }

@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { Modal } from '../ui/Modal';
+import { fetchCategoriesApi, saveCategoryApi, deleteCategoryApi } from '../../services/api';
 import { toast } from 'sonner';
 import { Layers, Plus, Edit, Trash2, ArrowUpDown, ShoppingBag, Coffee, Tv, Home, Package } from 'lucide-react';
 
-const initialCategories = [
-  { id: 'c1', name: 'Fresh Groceries', slug: 'fresh-groceries', icon: 'ShoppingBag', sort_order: 1, is_active: true, product_count: 24 },
-  { id: 'c2', name: 'Beverages & Drinks', slug: 'beverages-drinks', icon: 'Coffee', sort_order: 2, is_active: true, product_count: 18 },
-  { id: 'c3', name: 'Electronics & Tech', slug: 'electronics-tech', icon: 'Tv', sort_order: 3, is_active: true, product_count: 12 },
-  { id: 'c4', name: 'Household & Baby', slug: 'household-baby', icon: 'Home', sort_order: 4, is_active: true, product_count: 15 }
-];
-
 export function CategoryManager() {
-  const [categories, setCategories] = useState(initialCategories);
+  const [categories, setCategories] = useState([]);
   const [selectedCat, setSelectedCat] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: '', slug: '', icon: 'ShoppingBag', sort_order: 1 });
+
+  const loadCategories = async () => {
+    const data = await fetchCategoriesApi();
+    if (data) setCategories(data);
+  };
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
   const handleOpenCreate = () => {
     setSelectedCat(null);
@@ -25,31 +28,27 @@ export function CategoryManager() {
 
   const handleOpenEdit = (cat) => {
     setSelectedCat(cat);
-    setFormData({ name: cat.name, slug: cat.slug, icon: cat.icon || 'ShoppingBag', sort_order: cat.sort_order });
+    setFormData({ name: cat.name, slug: cat.slug || cat.name?.toLowerCase().replace(/\s+/g, '-'), icon: cat.icon || 'ShoppingBag', sort_order: cat.sort_order || 1 });
     setIsModalOpen(true);
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    if (selectedCat) {
-      setCategories(prev => prev.map(c => c.id === selectedCat.id ? { ...c, ...formData } : c));
-      toast.success(`Category '${formData.name}' updated`);
-    } else {
-      const newCat = {
-        id: `c-${Date.now()}`,
-        ...formData,
-        is_active: true,
-        product_count: 0
-      };
-      setCategories(prev => [...prev, newCat]);
-      toast.success(`Category '${formData.name}' created`);
-    }
+    const payload = {
+      id: selectedCat ? selectedCat.id : undefined,
+      ...formData,
+      is_active: true
+    };
+    await saveCategoryApi(payload);
+    await loadCategories();
+    toast.success(`Category '${formData.name}' saved`);
     setIsModalOpen(false);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Remove this category from taxonomy?")) {
-      setCategories(prev => prev.filter(c => c.id !== id));
+      await deleteCategoryApi(id);
+      setCategories(prev => prev.filter(c => String(c.id) !== String(id)));
       toast.success("Category deleted");
     }
   };

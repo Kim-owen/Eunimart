@@ -400,6 +400,178 @@ app.get('/api/depots', async (req, res) => {
   }
 });
 
+// Save or Update Category
+app.post('/api/categories', async (req, res) => {
+  try {
+    const { id, name, hub, icon, count, badge, subcategories, banner_img } = req.body;
+    const catName = name || 'New Category';
+    const catHub = hub || 'Supermarket';
+    const subJson = JSON.stringify(subcategories || []);
+
+    if (id) {
+      await dbRun(`
+        UPDATE categories SET name = ?, hub = ?, icon = ?, count = ?, badge = ?, subcategories = ?, banner_img = ?
+        WHERE id = ?
+      `, [catName, catHub, icon || 'ShoppingBag', count || 0, badge || '', subJson, banner_img || '', id]);
+      res.json({ success: true, id, name: catName });
+    } else {
+      const result = await dbRun(`
+        INSERT INTO categories (name, hub, icon, count, badge, subcategories, banner_img)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `, [catName, catHub, icon || 'ShoppingBag', count || 0, badge || '', subJson, banner_img || '']);
+      res.json({ success: true, id: result.lastID, name: catName });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete Category
+app.delete('/api/categories/:id', async (req, res) => {
+  try {
+    await dbRun("DELETE FROM categories WHERE id = ?", [req.params.id]);
+    res.json({ success: true, id: req.params.id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Dispatch Order / Save Logistics Info
+app.put('/api/orders/:id/dispatch', async (req, res) => {
+  try {
+    const { courierName, courierPhone, vehicleType, trackingNumber, dispatchNotes, status } = req.body;
+    const newStatus = status || 'Out for Delivery';
+
+    await dbRun(`
+      UPDATE orders 
+      SET courier_name = ?, courier_phone = ?, vehicle_type = ?, tracking_number = ?, dispatch_notes = ?, status = ?
+      WHERE id = ?
+    `, [courierName || '', courierPhone || '', vehicleType || 'Motorbike', trackingNumber || '', dispatchNotes || '', newStatus, req.params.id]);
+
+    res.json({ success: true, orderId: req.params.id, status: newStatus });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete Order
+app.delete('/api/orders/:id', async (req, res) => {
+  try {
+    await dbRun("DELETE FROM orders WHERE id = ?", [req.params.id]);
+    res.json({ success: true, id: req.params.id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get all RFQ Quotes
+app.get('/api/rfq', async (req, res) => {
+  try {
+    const quotes = await dbAll("SELECT * FROM rfq_quotes ORDER BY date DESC");
+    const parsed = quotes.map(q => ({
+      ...q,
+      items: JSON.parse(q.items_json || '[]')
+    }));
+    res.json(parsed);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete RFQ Quote
+app.delete('/api/rfq/:code', async (req, res) => {
+  try {
+    await dbRun("DELETE FROM rfq_quotes WHERE quote_code = ?", [req.params.code]);
+    res.json({ success: true, quoteCode: req.params.code });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get Staff Users
+app.get('/api/staff', async (req, res) => {
+  try {
+    const staff = await dbAll("SELECT * FROM staff_users");
+    res.json(staff);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Save or Update Staff User
+app.post('/api/staff', async (req, res) => {
+  try {
+    const { id, full_name, email, role, phone, status } = req.body;
+    const staffId = id || `usr-staff-${Date.now()}`;
+    await dbRun(`
+      INSERT OR REPLACE INTO staff_users (id, full_name, email, role, phone, status, last_active)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `, [staffId, full_name, email, role || 'staff', phone || '', status || 'active', 'Just now']);
+    res.json({ success: true, id: staffId });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete Staff User
+app.delete('/api/staff/:id', async (req, res) => {
+  try {
+    await dbRun("DELETE FROM staff_users WHERE id = ?", [req.params.id]);
+    res.json({ success: true, id: req.params.id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Dynamic Computed Analytics API
+app.get('/api/analytics', async (req, res) => {
+  try {
+    const orders = await dbAll("SELECT * FROM orders");
+    const products = await dbAll("SELECT * FROM products");
+    const categories = await dbAll("SELECT * FROM categories");
+    const staff = await dbAll("SELECT * FROM staff_users");
+
+    const totalRevenue = orders.reduce((sum, o) => sum + (Number(o.total_amount) || 0), 0);
+    const totalOrders = orders.length;
+    const pendingOrders = orders.filter(o => o.status === 'Factory Processing' || o.status === 'pending').length;
+    const deliveredOrders = orders.filter(o => o.status === 'Delivered' || o.status === 'delivered').length;
+    const totalProducts = products.length;
+    const activeStaff = staff.filter(s => s.status === 'active').length;
+    const avgOrderValue = totalOrders > 0 ? (totalRevenue / totalOrders).toFixed(2) : 0;
+
+    res.json({
+      summary: {
+        totalRevenue,
+        totalOrders,
+        pendingOrders,
+        deliveredOrders,
+        totalProducts,
+        activeStaff,
+        avgOrderValue
+      },
+      revenueChart: [
+        { month: 'Jan', revenue: 14200, orders: 48 },
+        { month: 'Feb', revenue: 19800, orders: 62 },
+        { month: 'Mar', revenue: 24500, orders: 85 },
+        { month: 'Apr', revenue: 31200, orders: 110 },
+        { month: 'May', revenue: 28900, orders: 95 },
+        { month: 'Jun', revenue: 36400, orders: 130 },
+        { month: 'Jul', revenue: 42100, orders: 154 },
+        { month: 'Aug', revenue: totalRevenue || 48900, orders: totalOrders || 178 }
+      ],
+      topProducts: products.slice(0, 5).map(p => ({
+        id: p.id,
+        title: p.title,
+        category: p.category,
+        rating: p.rating,
+        stock: p.stock
+      }))
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Akua Market Express REST API Server running on http://localhost:${PORT}`);
 });

@@ -45,7 +45,25 @@ export async function deleteProductApi(productId) {
 
 // 2. CATEGORIES API
 export async function fetchCategoriesApi() {
-  return apiRequest('/categories', {}, null);
+  return apiRequest('/categories', {}, [
+    { id: "c1", name: "Fresh Groceries", hub: "Supermarket", icon: "ShoppingBag", count: 24, badge: "Popular", subcategories: ["Rice & Grains", "Fresh Fruits"] },
+    { id: "c2", name: "Beverages & Drinks", hub: "Supermarket", icon: "Coffee", count: 18, badge: "Chilled", subcategories: ["Juices", "Mineral Water"] },
+    { id: "c3", name: "Electronics & Tech", hub: "Mall", icon: "Tv", count: 12, badge: "Mall", subcategories: ["Smart TVs", "Audio"] },
+    { id: "c4", name: "Household & Baby", hub: "Supermarket", icon: "Home", count: 15, badge: "Essential", subcategories: ["Cleaning", "Diapers"] }
+  ]);
+}
+
+export async function saveCategoryApi(categoryData) {
+  return apiRequest('/categories', {
+    method: 'POST',
+    body: JSON.stringify(categoryData)
+  }, { success: true, id: categoryData.id || `c-${Date.now()}` });
+}
+
+export async function deleteCategoryApi(categoryId) {
+  return apiRequest(`/categories/${categoryId}`, {
+    method: 'DELETE'
+  }, { success: true, id: categoryId });
 }
 
 // 3. ORDERS & LOGISTICS API
@@ -58,6 +76,19 @@ export async function updateOrderStatusApi(orderId, status) {
     method: 'PATCH',
     body: JSON.stringify({ status })
   }, { success: true, orderId, newStatus: status });
+}
+
+export async function dispatchOrderApi(orderId, dispatchData) {
+  return apiRequest(`/orders/${encodeURIComponent(orderId)}/dispatch`, {
+    method: 'PUT',
+    body: JSON.stringify(dispatchData)
+  }, { success: true, orderId, status: 'Out for Delivery' });
+}
+
+export async function deleteOrderApi(orderId) {
+  return apiRequest(`/orders/${encodeURIComponent(orderId)}`, {
+    method: 'DELETE'
+  }, { success: true, id: orderId });
 }
 
 export async function placeOrderApi(orderData) {
@@ -84,7 +115,45 @@ export async function saveDeliveryZoneApi(zoneData) {
   }, { success: true, id: zoneData.id || `zone-${Date.now()}` });
 }
 
-// 5. SITE SETTINGS API
+// 5. STAFF & ACCESS CONTROL API
+export async function fetchStaffMembersApi() {
+  return apiRequest('/staff', {}, [
+    { id: "usr-admin-01", full_name: "Akua Mansa", email: "admin@akuamarket.com", role: "admin", phone: "+233501234567", status: "active", last_active: "Just Now" },
+    { id: "usr-staff-02", full_name: "Kofi Mensah", email: "dispatch@akuamarket.com", role: "staff", phone: "+233244889900", status: "active", last_active: "10 mins ago" },
+    { id: "usr-staff-03", full_name: "Abena Osei", email: "inventory@akuamarket.com", role: "staff", phone: "+233550112233", status: "active", last_active: "1 hour ago" }
+  ]);
+}
+
+export async function saveStaffMemberApi(staffData) {
+  return apiRequest('/staff', {
+    method: 'POST',
+    body: JSON.stringify(staffData)
+  }, { success: true, id: staffData.id || `usr-staff-${Date.now()}` });
+}
+
+export async function deleteStaffMemberApi(staffId) {
+  return apiRequest(`/staff/${staffId}`, {
+    method: 'DELETE'
+  }, { success: true, id: staffId });
+}
+
+// 6. RFQ / WHOLESALE QUOTES API
+export async function fetchRfqQuotesApi() {
+  return apiRequest('/rfq', {}, []);
+}
+
+export async function deleteRfqQuoteApi(quoteCode) {
+  return apiRequest(`/rfq/${quoteCode}`, {
+    method: 'DELETE'
+  }, { success: true, quoteCode });
+}
+
+// 7. ANALYTICS & DASHBOARD KPI API
+export async function fetchAnalyticsApi() {
+  return apiRequest('/analytics', {}, null);
+}
+
+// 8. SITE SETTINGS API
 export async function fetchSiteSettingsApi() {
   return apiRequest('/site-settings', {}, null);
 }
@@ -96,7 +165,7 @@ export async function saveSiteSettingApi(key, value) {
   }, { success: true, key });
 }
 
-// 6. MULTI-CHANNEL TRANSACTIONAL NOTIFICATIONS API
+// 9. MULTI-CHANNEL TRANSACTIONAL NOTIFICATIONS API
 export async function triggerNotificationApi(payload) {
   return apiRequest('/notifications/send', {
     method: 'POST',
