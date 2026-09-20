@@ -105,10 +105,28 @@ export function LiveStorefrontPreview() {
           badge: p.category?.split(' ')?.[0]?.toUpperCase() || 'ESSENTIAL',
           rating: p.rating || 4.9
         })));
+      } else {
+        try {
+          const stored = localStorage.getItem('akuamarket_products');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setProducts(parsed.map(p => ({
+                id: p.id,
+                title: p.title,
+                price: p.tiers?.[0]?.price || p.price || 50,
+                image: p.image,
+                badge: p.category?.split(' ')?.[0]?.toUpperCase() || 'ESSENTIAL',
+                rating: p.rating || 4.9
+              })));
+            }
+          }
+        } catch (e) {}
       }
     }
     load();
   }, []);
+
 
   const addToCart = (p) => {
     setCart(prev => [...prev, p]);
@@ -220,8 +238,24 @@ export function LiveStorefrontPreview() {
             </div>
           )}
 
+          {/* Storefront Header Bar */}
+          <div className="bg-slate-900/90 border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-amber-400 p-0.5 shadow-md overflow-hidden">
+                <img src="/factory_mall_logo.jpg" alt="Factory Mall Logo" className="w-full h-full object-cover rounded-[7px]" />
+              </div>
+              <span className="font-extrabold text-sm text-white tracking-tight">
+                FACTORY<span className="text-emerald-400">MALL</span>
+              </span>
+            </div>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700">
+              Supermarket & Shopping Mall
+            </span>
+          </div>
+
           {/* Section: Hero Media Multi-Slide Carousel */}
           {homepageSections.find(s => s.id === 'hero')?.visible && (
+
             <div className="relative min-h-[380px] md:min-h-[420px] flex items-center justify-center p-6 md:p-10 overflow-hidden group">
               
               {/* 60s Animated Progress Line */}
@@ -242,15 +276,15 @@ export function LiveStorefrontPreview() {
                   muted
                   loop
                   playsInline
-                  poster={activeSlide.posterUrl}
+                  poster={activeSlide.posterUrl || undefined}
                   className="absolute inset-0 w-full h-full object-cover z-0 opacity-40 filter brightness-90 transition-opacity duration-500"
                 >
-                  <source src={activeSlide.videoUrl} type="video/mp4" />
+                  {activeSlide.videoUrl && <source src={activeSlide.videoUrl} type="video/mp4" />}
                 </video>
               ) : (
                 <img
-                  key={activeSlide.posterUrl}
-                  src={activeSlide.posterUrl}
+                  key={activeSlide.posterUrl || 'hero-img'}
+                  src={activeSlide.posterUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80'}
                   alt={activeSlide.headline}
                   className="absolute inset-0 w-full h-full object-cover z-0 opacity-40 transition-opacity duration-500"
                   onError={(e) => {
@@ -375,7 +409,7 @@ export function LiveStorefrontPreview() {
                     <div className="space-y-3">
                       <div className="h-44 rounded-xl overflow-hidden bg-slate-950 relative border border-slate-800/60">
                         <img
-                          src={p.image}
+                          src={p.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=300&q=80'}
                           alt={p.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           onError={(e) => {

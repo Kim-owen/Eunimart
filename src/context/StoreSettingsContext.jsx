@@ -87,16 +87,25 @@ const initialPolicies = {
 
 const initialNotifications = {
   adminPhone: '+233501234567',
-  adminEmail: 'alerts@akuamarket.com',
+  adminEmail: 'alerts@factorymall.com',
   customerSmsEnabled: true,
   customerEmailEnabled: true,
   staffAlertsEnabled: true
 };
 
 const initialTicker = {
-  text: 'SAME DAY FREIGHT DELIVERY ACROSS GREATER ACCRA & TEMA | USE CODE "AKUA2026" FOR 10% OFF',
+  text: 'SAME DAY FREIGHT DELIVERY ACROSS GREATER ACCRA & TEMA | USE CODE "FACTORY2026" FOR 10% OFF',
+
   badge: 'FLASH PROMO',
   link: '/storefront'
+};
+
+const initialPaymentSettings = {
+  paystackEnv: 'test',
+  paystackPubKey: import.meta.env?.VITE_PAYSTACK_PUBLIC_KEY || '',
+  momoChannels: { mtn: true, telecel: true, atMoney: true },
+  isSecretKeyConfigured: false,
+  secretKeyMasked: ''
 };
 
 export function StoreSettingsProvider({ children }) {
@@ -111,6 +120,7 @@ export function StoreSettingsProvider({ children }) {
   const [policies, setPolicies] = useState(initialPolicies);
   const [notifications, setNotifications] = useState(initialNotifications);
   const [ticker, setTicker] = useState(initialTicker);
+  const [paymentSettings, setPaymentSettings] = useState(initialPaymentSettings);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -134,6 +144,7 @@ export function StoreSettingsProvider({ children }) {
         if (data.store_policies) setPolicies(data.store_policies);
         if (data.notifications) setNotifications(data.notifications);
         if (data.ticker) setTicker(data.ticker);
+        if (data.payment_settings) setPaymentSettings(data.payment_settings);
       }
       setLoading(false);
     }
@@ -168,6 +179,20 @@ export function StoreSettingsProvider({ children }) {
     await saveSiteSettingApi('ticker', newTicker);
   };
 
+  const updatePaymentSettings = async (newPaymentSettings) => {
+    setPaymentSettings(prev => ({
+      ...prev,
+      ...newPaymentSettings,
+      isSecretKeyConfigured: newPaymentSettings.paystackSecretKey
+        ? Boolean(newPaymentSettings.paystackSecretKey.trim().length > 0)
+        : prev.isSecretKeyConfigured,
+      secretKeyMasked: newPaymentSettings.paystackSecretKey?.trim()
+        ? `••••••••••••••••••••${newPaymentSettings.paystackSecretKey.trim().slice(-4)}`
+        : prev.secretKeyMasked
+    }));
+    await saveSiteSettingApi('payment_settings', newPaymentSettings);
+  };
+
   return (
     <StoreSettingsContext.Provider value={{
       homepageSections,
@@ -180,6 +205,8 @@ export function StoreSettingsProvider({ children }) {
       updateNotifications,
       ticker,
       updateTicker,
+      paymentSettings,
+      updatePaymentSettings,
       loading
     }}>
       {children}

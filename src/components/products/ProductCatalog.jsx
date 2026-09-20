@@ -120,8 +120,29 @@ export function ProductCatalog() {
   const loadProducts = async () => {
     setIsLoading(true);
     const remote = await fetchProductsApi();
-    if (Array.isArray(remote)) {
+    if (Array.isArray(remote) && remote.length > 0) {
       setProducts(remote);
+      try {
+        localStorage.setItem('akuamarket_products', JSON.stringify(remote));
+      } catch (e) {}
+    } else {
+      const stored = localStorage.getItem('akuamarket_products');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setProducts(parsed);
+          } else {
+            setProducts(sampleProducts);
+            localStorage.setItem('akuamarket_products', JSON.stringify(sampleProducts));
+          }
+        } catch (e) {
+          setProducts(sampleProducts);
+        }
+      } else {
+        setProducts(sampleProducts);
+        localStorage.setItem('akuamarket_products', JSON.stringify(sampleProducts));
+      }
     }
     setIsLoading(false);
   };
@@ -151,9 +172,22 @@ export function ProductCatalog() {
     }
   };
 
-  const handleSaveSuccess = async () => {
+  const handleSaveSuccess = async (savedProduct) => {
+    if (savedProduct && savedProduct.id) {
+      setProducts(prev => {
+        const exists = prev.some(p => p.id === savedProduct.id);
+        const updated = exists
+          ? prev.map(p => (p.id === savedProduct.id ? { ...p, ...savedProduct } : p))
+          : [savedProduct, ...prev];
+        try {
+          localStorage.setItem('akuamarket_products', JSON.stringify(updated));
+        } catch (e) {}
+        return updated;
+      });
+    }
     await loadProducts();
   };
+
 
   const totalStockUnits = products.reduce((acc, p) => acc + (Number(p.stock) || 0), 0);
   const inventoryWorth = products.reduce((acc, p) => acc + ((Number(p.price) || 50) * (Number(p.stock) || 0)), 0);

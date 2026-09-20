@@ -38,12 +38,21 @@ export async function fetchProducts(filters = {}) {
 
     const res = await fetch(`${API_BASE_URL}/products?${query.toString()}`);
     if (!res.ok) throw new Error('Network error');
-    return await res.json();
+    const data = await res.json();
+    if (Array.isArray(data) && data.length > 0) return data;
   } catch (err) {
     console.warn("Backend offline, using local state products fallback.");
-    return null;
   }
+  try {
+    const stored = localStorage.getItem('akuamarket_products');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {}
+  return null;
 }
+
 
 export async function placeMoMoOrder(orderData) {
   try {

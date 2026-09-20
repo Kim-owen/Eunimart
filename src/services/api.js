@@ -27,21 +27,71 @@ async function apiRequest(endpoint, options = {}, fallbackData = null) {
 // 1. PRODUCTS API
 export async function fetchProductsApi(filters = {}) {
   const query = new URLSearchParams(filters).toString();
-  return apiRequest(`/products${query ? `?${query}` : ''}`, {}, null);
+  const remote = await apiRequest(`/products${query ? `?${query}` : ''}`, {}, null);
+  if (Array.isArray(remote) && remote.length > 0) {
+    try {
+      localStorage.setItem('akuamarket_products', JSON.stringify(remote));
+    } catch (e) {}
+    return remote;
+  }
+  try {
+    const stored = localStorage.getItem('akuamarket_products');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {}
+  return remote;
 }
 
 export async function saveProductApi(productData) {
-  return apiRequest('/products/manage', {
+  const res = await apiRequest('/products/manage', {
     method: 'POST',
     body: JSON.stringify(productData)
   }, { success: true, id: productData.id || `p-${Date.now()}` });
+
+  try {
+    const stored = localStorage.getItem('akuamarket_products');
+    let list = stored ? JSON.parse(stored) : [];
+    const prodId = res.id || productData.id || `p-${Date.now()}`;
+    const fullProd = {
+      ...productData,
+      id: prodId,
+      sku: productData.sku || res.sku || `SKU-${Math.floor(10000 + Math.random() * 90000)}`,
+      tiers: productData.tiers || [
+        { id: 'unit', label: 'Single Unit', price: Number(productData.price) || 50, unitCount: 1 }
+      ]
+    };
+    const idx = list.findIndex(p => p.id === prodId);
+    if (idx >= 0) {
+      list[idx] = { ...list[idx], ...fullProd };
+    } else {
+      list.unshift(fullProd);
+    }
+    localStorage.setItem('akuamarket_products', JSON.stringify(list));
+  } catch (e) {
+    console.warn("Failed to sync product to localStorage:", e);
+  }
+
+  return res;
 }
 
 export async function deleteProductApi(productId) {
-  return apiRequest(`/products/${productId}`, {
+  const res = await apiRequest(`/products/${productId}`, {
     method: 'DELETE'
   }, { success: true, id: productId });
+
+  try {
+    const stored = localStorage.getItem('akuamarket_products');
+    if (stored) {
+      const list = JSON.parse(stored).filter(p => p.id !== productId);
+      localStorage.setItem('akuamarket_products', JSON.stringify(list));
+    }
+  } catch (e) {}
+
+  return res;
 }
+
 
 // 2. CATEGORIES API
 export async function fetchCategoriesApi() {

@@ -738,7 +738,7 @@ export function HeroMediaManager() {
               >
                 <div className="relative h-20 rounded-xl overflow-hidden mb-2 bg-slate-950">
                   <img
-                    src={preset.posterUrl}
+                    src={preset.posterUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80'}
                     alt={preset.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
@@ -1030,7 +1030,7 @@ export function HeroMediaManager() {
                       <div className="flex flex-col sm:flex-row items-center gap-3">
                         <div className="w-24 h-16 rounded-xl overflow-hidden bg-slate-900 border border-slate-700 flex-shrink-0 relative">
                           <img
-                            src={currentSlide.posterUrl}
+                            src={currentSlide.posterUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80'}
                             alt="Poster Preview"
                             className="w-full h-full object-cover"
                             onError={(e) => {
@@ -1107,7 +1107,7 @@ export function HeroMediaManager() {
                     <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
                         <img
-                          src={currentSlide.posterUrl}
+                          src={currentSlide.posterUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80'}
                           alt="Hero Preview"
                           className="w-12 h-12 rounded-lg object-cover border border-slate-700 flex-shrink-0"
                           onError={(e) => {
@@ -1599,7 +1599,7 @@ export function HeroMediaManager() {
                   ref={videoRef}
                   key={activePreviewSlide.videoUrl}
                   src={activePreviewSlide.videoUrl}
-                  poster={activePreviewSlide.posterUrl}
+                  poster={activePreviewSlide.posterUrl || undefined}
                   autoPlay
                   muted={isMuted}
                   loop
@@ -1608,7 +1608,7 @@ export function HeroMediaManager() {
                 />
               ) : (
                 <img
-                  src={activePreviewSlide.posterUrl}
+                  src={activePreviewSlide.posterUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80'}
                   alt="Hero Poster"
                   className="absolute inset-0 w-full h-full object-cover"
                   onError={(e) => {

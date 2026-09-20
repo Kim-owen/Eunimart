@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import crypto from 'crypto';
 import { initDb, dbAll, dbGet, dbRun } from './db.js';
 
 const app = express();
@@ -356,6 +357,20 @@ app.get('/api/site-settings', async (req, res) => {
     if (!settings.store_policies) settings.store_policies = { minOrderAmount: 50, businessHours: "8:00 AM - 10:00 PM GMT", maintenanceMode: false, maintenanceMessage: "Store is currently undergoing routine inventory refresh." };
     if (!settings.notifications) settings.notifications = { adminPhone: "+233501234567", adminEmail: "alerts@akuamarket.com", customerSmsEnabled: true, customerEmailEnabled: true, staffAlertsEnabled: true };
     
+    // Sanitize payment gateway credentials (NEVER leak private secret keys to client)
+    const storedPayment = settings.payment_settings || {};
+    const effectiveSecretKey = storedPayment.paystackSecretKey || process.env.PAYSTACK_SECRET_KEY || '';
+    const hasSecretKey = Boolean(effectiveSecretKey && effectiveSecretKey.trim().length > 0);
+    const last4Secret = hasSecretKey ? effectiveSecretKey.trim().slice(-4) : '';
+
+    settings.payment_settings = {
+      paystackEnv: storedPayment.paystackEnv || 'test',
+      paystackPubKey: storedPayment.paystackPubKey || process.env.VITE_PAYSTACK_PUBLIC_KEY || '',
+      momoChannels: storedPayment.momoChannels || { mtn: true, telecel: true, atMoney: true },
+      isSecretKeyConfigured: hasSecretKey,
+      secretKeyMasked: hasSecretKey ? `••••••••••••••••••••${last4Secret}` : ''
+    };
+
     res.json(settings);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -372,10 +387,31 @@ app.post('/api/site-settings', async (req, res) => {
         value_json TEXT NOT NULL
       )
     `);
+
+    let valueToStore = value;
+
+    // Special handling for payment_settings: if paystackSecretKey was not provided (or left blank), preserve existing
+    if (key === 'payment_settings' && typeof value === 'object' && value !== null) {
+      const existingRow = await dbGet("SELECT value_json FROM site_settings WHERE key = 'payment_settings'");
+      let existingSettings = {};
+      if (existingRow?.value_json) {
+        try { existingSettings = JSON.parse(existingRow.value_json); } catch (e) {}
+      }
+
+      valueToStore = {
+        paystackEnv: value.paystackEnv || existingSettings.paystackEnv || 'test',
+        paystackPubKey: value.paystackPubKey !== undefined ? value.paystackPubKey : (existingSettings.paystackPubKey || ''),
+        paystackSecretKey: (value.paystackSecretKey && value.paystackSecretKey.trim().length > 0)
+          ? value.paystackSecretKey.trim()
+          : (existingSettings.paystackSecretKey || ''),
+        momoChannels: value.momoChannels || existingSettings.momoChannels || { mtn: true, telecel: true, atMoney: true }
+      };
+    }
+
     await dbRun(`
       INSERT OR REPLACE INTO site_settings (key, value_json)
       VALUES (?, ?)
-    `, [key, JSON.stringify(value)]);
+    `, [key, JSON.stringify(valueToStore)]);
     res.json({ success: true, key });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -392,9 +428,9 @@ app.post('/api/products/manage', async (req, res) => {
     const finalImage = (image !== undefined && image !== null) ? image : '';
 
     await dbRun(`
-      INSERT OR REPLACE INTO products (id, title, category, subcategory, hub, size, factory, stock, rating, reviews, image, is_hot)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 4.8, 10, ?, ?)
-    `, [prodId, title, category || 'Groceries & Food Staples', subcategory || 'Staples', hub || 'Supermarket', size || 'Pack', factory || 'Akua Direct', Number(stock) || 50, finalImage, is_hot ? 1 : 0]);
+      INSERT OR REPLACE INTO products (id, sku, title, category, subcategory, hub, size, factory, stock, rating, reviews, image, is_hot)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 4.8, 10, ?, ?)
+    `, [prodId, productSku, title, category || 'Groceries & Food Staples', subcategory || 'Staples', hub || 'Supermarket', size || 'Pack', factory || 'Akua Direct', Number(stock) || 50, finalImage, is_hot ? 1 : 0]);
 
     // Handle Tier pricing
     if (price) {
@@ -422,18 +458,47 @@ app.delete('/api/products/:id', async (req, res) => {
   }
 });
 
-// Payment Gateway Webhook Callback Handler (Paystack / Stripe)
+// Payment Gateway Webhook Callback Handler (Paystack / Mobile Money)
 app.post('/api/webhooks/paystack', async (req, res) => {
   try {
+    // 1. Retrieve the configured secret key from environment or server settings
+    let secretKey = process.env.PAYSTACK_SECRET_KEY;
+    if (!secretKey) {
+      const row = await dbGet("SELECT value_json FROM site_settings WHERE key = 'payment_settings'");
+      if (row?.value_json) {
+        try {
+          const parsed = JSON.parse(row.value_json);
+          secretKey = parsed.paystackSecretKey;
+        } catch (e) {}
+      }
+    }
+
+    const paystackSignature = req.headers['x-paystack-signature'];
+
+    // 2. Cryptographically verify signature if secret key is present
+    if (secretKey && secretKey.trim().length > 0) {
+      const hash = crypto
+        .createHmac('sha512', secretKey.trim())
+        .update(JSON.stringify(req.body))
+        .digest('hex');
+
+      if (hash !== paystackSignature) {
+        console.warn("[SECURITY ALERT] Rejected unauthorized Paystack webhook. Signature mismatch!");
+        return res.status(401).json({ error: 'Unauthorized: Invalid webhook signature' });
+      }
+    } else {
+      console.warn("[SECURITY NOTICE] Webhook processed without secret key signature verification. Configure PAYSTACK_SECRET_KEY in production.");
+    }
+
     const event = req.body;
-    console.log("Received Payment Webhook Event:", event?.event || 'charge.success');
+    console.log("Received Verified Payment Webhook Event:", event?.event || 'charge.success');
     
     // Auto-update order if reference present
     if (event?.data?.reference) {
       await dbRun("UPDATE orders SET status = 'Factory Processing' WHERE id = ?", [event.data.reference]);
     }
     
-    res.json({ status: 'success', message: 'Webhook event processed' });
+    res.json({ status: 'success', message: 'Webhook event verified and processed' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

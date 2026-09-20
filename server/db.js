@@ -71,6 +71,7 @@ export async function initDb() {
   await dbRun(`
     CREATE TABLE IF NOT EXISTS products (
       id TEXT PRIMARY KEY,
+      sku TEXT,
       title TEXT NOT NULL,
       category TEXT NOT NULL,
       subcategory TEXT,
@@ -84,6 +85,12 @@ export async function initDb() {
       is_hot INTEGER DEFAULT 0
     )
   `);
+
+  try {
+    await dbRun("ALTER TABLE products ADD COLUMN sku TEXT");
+  } catch (e) {
+    // Column already exists
+  }
 
   // Create Product Wholesale Tiers table
   await dbRun(`

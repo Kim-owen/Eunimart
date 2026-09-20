@@ -43,25 +43,24 @@ export function TopHeader({ activeTab, setActiveTab, onOpenStorefront }) {
           onClick={() => setActiveTab('dashboard')}
           className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group select-none flex-shrink-0"
         >
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-emerald-400 to-amber-400 p-0.5 shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-all">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center text-emerald-400">
-              <Store className="w-4 h-4 sm:w-5 sm:h-5" />
-            </div>
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-amber-400 p-0.5 shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-all overflow-hidden">
+            <img src="/factory_mall_logo.jpg" alt="Factory Mall Shopping Cart Logo" className="w-full h-full object-cover rounded-[9px]" />
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <span className="font-extrabold text-base sm:text-lg text-white tracking-tight leading-none">
-                Akua<span className="text-emerald-400">Market</span>
+                Factory<span className="text-emerald-400">Mall</span>
               </span>
               <span className="hidden sm:inline-flex text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                D2C Enterprise
+                Direct Wholesale
               </span>
             </div>
             <span className="text-[11px] text-slate-400 font-medium leading-tight mt-0.5 hidden sm:inline-block">
-              Ghana Wholesale & Supermarket Engine
+              Factory Direct Supermarket & Mall Engine
             </span>
           </div>
         </div>
+
 
         {/* Universal Search Bar */}
         <div className="hidden md:flex items-center flex-1 max-w-lg mx-6">

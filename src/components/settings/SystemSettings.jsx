@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStoreSettings } from '../../context/StoreSettingsContext';
+import { useAdminGuard } from '../security/useAdminGuard';
 import { GlassCard } from '../ui/GlassCard';
 import { toast } from 'sonner';
 import {
@@ -20,11 +21,22 @@ import {
   Zap,
   Globe,
   Sliders,
-  DollarSign
+  DollarSign,
+  Lock,
+  RefreshCw
 } from 'lucide-react';
 
 export function SystemSettings() {
-  const { policies, updatePolicies, notifications, updateNotifications } = useStoreSettings();
+  const {
+    policies,
+    updatePolicies,
+    notifications,
+    updateNotifications,
+    paymentSettings,
+    updatePaymentSettings
+  } = useStoreSettings();
+
+  const { isAdmin } = useAdminGuard();
 
   const [activeTab, setActiveTab] = useState('policies'); // 'policies' | 'notifications' | 'payments' | 'maintenance'
 
@@ -44,14 +56,25 @@ export function SystemSettings() {
   const [staffAlerts, setStaffAlerts] = useState(notifications.staffAlertsEnabled ?? true);
   const [isSendingTest, setIsSendingTest] = useState(false);
 
-  // Payment Gateway State (Local preview)
-  const [paystackEnv, setPaystackEnv] = useState('test'); // 'test' | 'live'
-  const [paystackPubKey, setPaystackPubKey] = useState('pk_test_88f912c9b68903c70f8087');
-  const [momoChannels, setMomoChannels] = useState({
+  // Payment Gateway State (Loaded securely from server)
+  const [paystackEnv, setPaystackEnv] = useState(paymentSettings?.paystackEnv || 'test'); // 'test' | 'live'
+  const [paystackPubKey, setPaystackPubKey] = useState(paymentSettings?.paystackPubKey || '');
+  const [newSecretKey, setNewSecretKey] = useState('');
+  const [momoChannels, setMomoChannels] = useState(paymentSettings?.momoChannels || {
     mtn: true,
     telecel: true,
     atMoney: true
   });
+  const [isSavingPayments, setIsSavingPayments] = useState(false);
+
+  // Sync payment settings when loaded from server
+  useEffect(() => {
+    if (paymentSettings) {
+      if (paymentSettings.paystackEnv) setPaystackEnv(paymentSettings.paystackEnv);
+      if (paymentSettings.paystackPubKey !== undefined) setPaystackPubKey(paymentSettings.paystackPubKey);
+      if (paymentSettings.momoChannels) setMomoChannels(paymentSettings.momoChannels);
+    }
+  }, [paymentSettings]);
 
   const handleSavePolicies = (e) => {
     e.preventDefault();
@@ -78,6 +101,25 @@ export function SystemSettings() {
     toast.success("Multi-Channel notification triggers saved!");
   };
 
+  const handleSavePayments = async (e) => {
+    if (e) e.preventDefault();
+    setIsSavingPayments(true);
+    try {
+      await updatePaymentSettings({
+        paystackEnv,
+        paystackPubKey,
+        paystackSecretKey: newSecretKey.trim() || undefined,
+        momoChannels
+      });
+      setNewSecretKey(''); // Clear out plaintext secret from state once saved
+      toast.success("Payment gateway settings securely saved to server vault!");
+    } catch (err) {
+      toast.error("Failed to save payment settings: " + err.message);
+    } finally {
+      setIsSavingPayments(false);
+    }
+  };
+
   const handleSendTestSms = () => {
     setIsSendingTest(true);
     setTimeout(() => {
@@ -86,11 +128,28 @@ export function SystemSettings() {
     }, 800);
   };
 
+  const webhookUrl = typeof window !== 'undefined'
+    ? `${window.location.origin.replace(':3030', ':5050')}/api/webhooks/paystack`
+    : '/api/webhooks/paystack';
+
   const handleCopyWebhook = () => {
-    const webhookUrl = `${window.location.origin.replace(':3030', ':5050')}/api/webhooks/paystack`;
     navigator.clipboard.writeText(webhookUrl);
     toast.success("Webhook URL copied to clipboard!");
   };
+
+  if (!isAdmin) {
+    return (
+      <div className="p-8 text-center space-y-4 animate-fadeIn">
+        <div className="inline-flex p-4 rounded-3xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
+          <AlertOctagon className="w-10 h-10" />
+        </div>
+        <h2 className="text-xl font-black text-white">Administrative Access Required</h2>
+        <p className="text-xs text-slate-400 max-w-md mx-auto">
+          System policies, multi-channel alerts, and payment gateway settlement credentials can only be accessed by authenticated System Administrators.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -429,12 +488,12 @@ export function SystemSettings() {
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">Secure settlement credentials for MTN MoMo, Telecel Cash, and AT Money.</p>
             </div>
-            <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 self-start sm:self-auto flex-shrink-0">
-              AES-256 Encrypted
+            <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 self-start sm:self-auto flex-shrink-0 flex items-center gap-1.5">
+              <Lock className="w-3.5 h-3.5" /> Server-Vault Protected
             </span>
           </div>
 
-          <div className="space-y-5">
+          <form onSubmit={handleSavePayments} className="space-y-5">
             {/* Mode Switcher */}
             <div>
               <label className="block text-xs font-bold text-slate-300 mb-2">Payment Environment</label>
@@ -472,17 +531,38 @@ export function SystemSettings() {
                   type="text"
                   value={paystackPubKey}
                   onChange={(e) => setPaystackPubKey(e.target.value)}
+                  placeholder="e.g. pk_test_... or pk_live_..."
                   className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 font-mono text-xs text-white focus:outline-none focus:border-emerald-500"
                 />
+                <p className="text-[11px] text-slate-400 mt-1">Used for client-side Paystack Mobile Money modal checkout initialization.</p>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">Paystack Secret Key</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold text-slate-300">
+                    Paystack Secret Key (Server Vault Protected)
+                  </label>
+                  {paymentSettings?.isSecretKeyConfigured ? (
+                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <ShieldCheck className="w-3 h-3" /> Configured ({paymentSettings.secretKeyMasked || '••••••••'})
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <AlertOctagon className="w-3 h-3" /> Not Configured
+                    </span>
+                  )}
+                </div>
                 <input
                   type="password"
-                  defaultValue="sk_test_9921471029410294182941"
+                  autoComplete="new-password"
+                  value={newSecretKey}
+                  onChange={(e) => setNewSecretKey(e.target.value)}
+                  placeholder={paymentSettings?.isSecretKeyConfigured ? "Enter new key to rotate (leave blank to keep current)" : "sk_test_... or sk_live_..."}
                   className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 font-mono text-xs text-white focus:outline-none focus:border-emerald-500"
                 />
+                <p className="text-[11px] text-slate-400 mt-1">
+                  🔒 Secret keys are stored strictly on the server and cryptographically verify webhooks via HMAC-SHA512.
+                </p>
               </div>
             </div>
 
@@ -493,17 +573,18 @@ export function SystemSettings() {
                   <Zap className="w-3.5 h-3.5 text-amber-400" /> Paystack Webhook Listener URI
                 </label>
                 <button
+                  type="button"
                   onClick={handleCopyWebhook}
-                  className="text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1 font-bold self-start sm:self-auto"
+                  className="text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1 font-bold self-start sm:self-auto cursor-pointer"
                 >
                   <Copy className="w-3.5 h-3.5" /> Copy URI
                 </button>
               </div>
               <p className="font-mono text-xs text-slate-300 bg-slate-900 px-3 py-2 rounded-xl border border-slate-800 select-all break-all">
-                {window.location.origin.replace(':3030', ':5050')}/api/webhooks/paystack
+                {webhookUrl}
               </p>
               <p className="text-[11px] text-slate-400">
-                Paste this into your Paystack Dashboard &gt; Settings &gt; API Keys & Webhooks to receive instant charge.success callbacks.
+                Paste this into your Paystack Dashboard &gt; Settings &gt; API Keys & Webhooks. All incoming payloads are verified using the <code className="text-emerald-400">x-paystack-signature</code> HMAC SHA-512 digest.
               </p>
             </div>
 
@@ -513,40 +594,74 @@ export function SystemSettings() {
                 Direct Ghana Telecom Settlement Channels
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setMomoChannels(prev => ({ ...prev, mtn: !prev.mtn }))}
+                  className={`p-3 rounded-xl border flex items-center justify-between transition-all text-left ${
+                    momoChannels.mtn ? 'bg-slate-900 border-emerald-500/40' : 'bg-slate-900/50 border-slate-800 opacity-60'
+                  }`}
+                >
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                     <span className="text-xs font-bold text-white">MTN Mobile Money</span>
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-400">Active</span>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+                  <span className={`text-[10px] font-bold ${momoChannels.mtn ? 'text-emerald-400' : 'text-slate-500'}`}>
+                    {momoChannels.mtn ? 'Active' : 'Disabled'}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMomoChannels(prev => ({ ...prev, telecel: !prev.telecel }))}
+                  className={`p-3 rounded-xl border flex items-center justify-between transition-all text-left ${
+                    momoChannels.telecel ? 'bg-slate-900 border-emerald-500/40' : 'bg-slate-900/50 border-slate-800 opacity-60'
+                  }`}
+                >
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
                     <span className="text-xs font-bold text-white">Telecel Cash</span>
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-400">Active</span>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+                  <span className={`text-[10px] font-bold ${momoChannels.telecel ? 'text-emerald-400' : 'text-slate-500'}`}>
+                    {momoChannels.telecel ? 'Active' : 'Disabled'}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMomoChannels(prev => ({ ...prev, atMoney: !prev.atMoney }))}
+                  className={`p-3 rounded-xl border flex items-center justify-between transition-all text-left ${
+                    momoChannels.atMoney ? 'bg-slate-900 border-emerald-500/40' : 'bg-slate-900/50 border-slate-800 opacity-60'
+                  }`}
+                >
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
                     <span className="text-xs font-bold text-white">AT Money</span>
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-400">Active</span>
-                </div>
+                  <span className={`text-[10px] font-bold ${momoChannels.atMoney ? 'text-emerald-400' : 'text-slate-500'}`}>
+                    {momoChannels.atMoney ? 'Active' : 'Disabled'}
+                  </span>
+                </button>
               </div>
             </div>
 
             <div className="pt-2 flex justify-end">
               <button
-                type="button"
-                onClick={() => toast.success("Gateway credentials updated and verified with Paystack API!")}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/20"
+                type="submit"
+                disabled={isSavingPayments}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all active:scale-95 cursor-pointer"
               >
-                <Save className="w-4 h-4" /> Save Payment Settings
+                {isSavingPayments ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" /> Saving Credentials...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" /> Save Payment Settings
+                  </>
+                )}
               </button>
             </div>
-          </div>
+          </form>
         </GlassCard>
       )}
 

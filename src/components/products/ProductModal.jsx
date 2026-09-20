@@ -109,11 +109,26 @@ export function ProductModal({ isOpen, onClose, product, onSaveSuccess }) {
     e.preventDefault();
     setLoading(true);
     const res = await saveProductApi(formData);
+    const savedObj = {
+      ...formData,
+      id: res.id || formData.id || `p-${Date.now()}`,
+      sku: res.sku || formData.sku || `SKU-${Math.floor(10000 + Math.random() * 90000)}`,
+      price: Number(formData.price) || 50,
+      stock: Number(formData.stock) || 100,
+      is_active: Boolean(formData.is_active),
+      is_hot: Boolean(formData.is_hot),
+      tiers: [
+        { id: 'unit', label: 'Single Unit', price: Number(formData.price) || 50, unitCount: 1 }
+      ]
+    };
     toast.success(product ? 'Product updated successfully' : 'New product created in catalog');
-    onSaveSuccess({ ...formData, id: res.id || formData.id || `p-${Date.now()}` });
+    if (onSaveSuccess) {
+      onSaveSuccess(savedObj);
+    }
     setLoading(false);
     onClose();
   };
+
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={product ? 'Edit Product Details' : 'Create New Product'} maxWidth="max-w-3xl">
