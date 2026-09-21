@@ -314,11 +314,11 @@ export function FullStorefront({ onOpenAdmin }) {
       {policies?.maintenanceMode && (
         <div className="bg-gradient-to-r from-amber-500 via-rose-500 to-amber-600 text-slate-950 px-4 py-2 text-xs font-black flex items-center justify-center gap-2 shadow-lg border-b border-amber-600">
           <AlertOctagon className="w-4 h-4 text-slate-950 animate-bounce" />
-          <span>SYSTEM NOTICE: {policies.maintenanceMessage || 'Palace Factory Superstore is currently undergoing inventory sync. Orders resume shortly.'}</span>
+          <span>SYSTEM NOTICE: {policies.maintenanceMessage || 'factoryMall Direct is currently undergoing inventory sync. Orders resume shortly.'}</span>
         </div>
       )}
 
-      {/* Palace Top Gold Gradient Accent Strip */}
+      {/* Top Gold Gradient Accent Strip */}
       <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-amber-400 to-amber-500" />
 
       {/* Top Announcement Bar */}
@@ -326,7 +326,7 @@ export function FullStorefront({ onOpenAdmin }) {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 truncate">
             <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black uppercase flex-shrink-0">
-              {ticker?.badge || 'PALACE ONLINE'}
+              {ticker?.badge || 'FACTORYMALL ONLINE'}
             </span>
             <span className="truncate text-slate-300">
               {(ticker?.text || 'FOR YOU, FOR YOURS, FOR GHANA | SAME-DAY EXPRESS FREIGHT DELIVERY ACROSS ACCRA & TEMA').replace(/⚡|📢|🎉|🏬|🛒|🏢|📦/g, '')}
@@ -351,18 +351,18 @@ export function FullStorefront({ onOpenAdmin }) {
         </div>
       </div>
 
-      {/* Main Palace Header */}
+      {/* Main Header */}
       <header className="sticky top-0 z-40 w-full bg-black/95 backdrop-blur-2xl border-b border-slate-800 px-4 lg:px-8 py-3.5 transition-colors">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           {/* Logo & Identity */}
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setSelectedHub('All'); setSelectedCategory('All'); }}>
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-amber-500 to-emerald-400 p-0.5 shadow-xl shadow-amber-500/20 group-hover:scale-105 transition-all overflow-hidden">
-              <img src="/factory_mall_logo.jpg" alt="Factory Mall Shopping Cart Logo" className="w-full h-full object-cover rounded-[14px]" />
+              <img src="/factory_mall_logo.jpg" alt="factoryMall Shopping Cart Logo" className="w-full h-full object-cover rounded-[14px]" />
             </div>
             <div>
-              <h1 className="text-xl lg:text-2xl font-black text-white tracking-tight leading-none flex items-center gap-1.5">
-                PALACE <span className="text-amber-400">MALL</span>
+              <h1 className="text-xl lg:text-2xl font-black text-white tracking-tight leading-none flex items-center gap-0.5">
+                factory<span className="text-amber-400">Mall</span>
               </h1>
               <p className="text-[10px] text-amber-400 uppercase font-extrabold tracking-widest mt-1">
                 For you, for yours, for Ghana
@@ -402,7 +402,7 @@ export function FullStorefront({ onOpenAdmin }) {
             </button>
 
             <button
-              onClick={() => toast.success('Welcome to Palace P-Club Rewards! 🎉')}
+              onClick={() => toast.success('Welcome to factoryMall P-Club Rewards! 🎉')}
               className="px-4 py-2 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-lg shadow-amber-400/20 transition-all active:scale-95 cursor-pointer"
             >
               Sign Up
