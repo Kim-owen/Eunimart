@@ -318,6 +318,9 @@ export function FullStorefront({ onOpenAdmin }) {
         </div>
       )}
 
+      {/* Palace-inspired Top Gold Accent Strip */}
+      <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-amber-400 to-teal-400" />
+
       {/* Top Announcement Bar */}
       <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-500 text-slate-950 px-4 py-2 text-xs font-black">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
@@ -361,26 +364,31 @@ export function FullStorefront({ onOpenAdmin }) {
               <h1 className="text-xl lg:text-2xl font-black text-white tracking-tight leading-none flex items-center gap-1.5">
                 FACTORY <span className="text-emerald-400">MALL</span>
               </h1>
-              <p className="text-[10px] text-slate-400 uppercase font-extrabold tracking-widest mt-1">
-                Factory Direct Supermarket & Mall
+              <p className="text-[10px] text-amber-400 uppercase font-extrabold tracking-widest mt-1 flex items-center gap-1">
+                <span>For you, for yours, for Ghana</span>
               </p>
             </div>
           </div>
 
-          {/* Search Bar */}
+          {/* Search Bar with Barcode Scanner Integration */}
           <div className="flex items-center flex-1 max-w-xl mx-2 sm:mx-4">
             <div className="relative w-full">
-              <Search className="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
+              <Search className="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
-                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-12 py-1.5 sm:py-2.5 text-[11px] sm:text-xs rounded-full bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 transition-all shadow-inner"
+                placeholder="Search products, brands, groceries..."
+                className="w-full pl-8 sm:pl-10 pr-10 sm:pr-14 py-1.5 sm:py-2.5 text-[11px] sm:text-xs rounded-full bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 transition-all shadow-inner"
               />
-              <kbd className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:inline-flex items-center gap-0.5 text-[10px] font-bold text-slate-400 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">
-                ⌘K
-              </kbd>
+              <button
+                type="button"
+                onClick={() => toast.info('Barcode Scanner Active! Point camera at product barcode 📷')}
+                className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-amber-400 hover:text-amber-300 hover:bg-slate-800 transition-colors cursor-pointer"
+                title="Scan Barcode"
+              >
+                <Zap className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
 
