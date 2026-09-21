@@ -155,17 +155,18 @@ export function FullStorefront({ onOpenAdmin }) {
   };
 
   const fallbackCategories = [
-    { name: "Groceries & Food Staples", hub: "Supermarket", count: 420, badge: "Supermarket Essential", subcategories: ["Rice & Grains", "Cooking Oils & Fats", "Pasta & Noodles", "Spices & Seasoning"], banner_img: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80" },
-    { name: "Fresh Produce & Bakery", hub: "Supermarket", count: 210, badge: "Daily Fresh", subcategories: ["Fresh Fruits", "Vegetables", "Artisanal Bread"], banner_img: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=800&q=80" },
-    { name: "Beverages & Cold Drinks", hub: "Supermarket", count: 310, badge: "Chilled & Bulk", subcategories: ["Juices & Smoothies", "Mineral Water", "Energy & Soda Drinks"], banner_img: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=800&q=80" },
-    { name: "Household & Cleaning", hub: "Supermarket", count: 240, badge: "Hygiene Pack", subcategories: ["Laundry Detergents", "Toilet Papers", "Surface Cleaners"], banner_img: "https://images.unsplash.com/photo-1584555613497-9ecf7e3d0a4a?auto=format&fit=crop&w=800&q=80" },
-    { name: "Baby & Infant Essentials", hub: "Supermarket", count: 155, badge: "Gentle Care", subcategories: ["Diapers & Wipes", "Baby Food & Formula"], banner_img: "https://images.unsplash.com/photo-1604917019112-7d8f8d7c5c9f?auto=format&fit=crop&w=800&q=80" },
-    { name: "Snacks & Confectionery", hub: "Supermarket", count: 195, badge: "Sweet Treats", subcategories: ["Biscuits & Crackers", "Chocolates & Candy", "Chips"], banner_img: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&w=800&q=80" },
-    { name: "Frozen & Chilled Foods", hub: "Supermarket", count: 120, badge: "Cold Chain Logistics", subcategories: ["Frozen Poultry & Meat", "Seafood & Fish"], banner_img: "https://images.unsplash.com/photo-1588165171080-c89acfa5ee83?auto=format&fit=crop&w=800&q=80" },
-    { name: "Stationery & Office Supplies", hub: "Mall", count: 280, badge: "Wholesale Superstore", subcategories: ["A4 Copy Paper", "Writing & Pens", "Notebooks"], banner_img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=800&q=80" },
-    { name: "Electronics & Tech Mall", hub: "Mall", count: 185, badge: "Mall Outlet", subcategories: ["Smart 4K TVs", "Commercial Audio", "Kitchen Appliances"], banner_img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=800&q=80" },
-    { name: "Health & Personal Care", hub: "Mall", count: 220, badge: "Self Care", subcategories: ["Body Wash & Soap", "Haircare", "Oral Care"], banner_img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80" },
-    { name: "Home & Kitchen Living", hub: "Mall", count: 160, badge: "Home Style", subcategories: ["Cookware & Sets", "Food Storage", "Bedding"], banner_img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80" }
+    { name: "Meat, Poultry & Fish", hub: "Supermarket", count: 180, badge: "Chilled Express", subcategories: ["Fresh Poultry", "Seafood & Fish", "Cold Cuts & Ribs"], banner_img: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80", tagline: "FRESH OFF THE FLIGHT", subtitle: "Good Food, better life!!! Direct cold chain delivery." },
+    { name: "Groceries & Food Staples", hub: "Supermarket", count: 420, badge: "Supermarket Essential", subcategories: ["Rice & Grains", "Cooking Oils & Fats", "Pasta & Noodles", "Spices & Seasoning"], banner_img: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80", tagline: "FARM FRESH DIRECT", subtitle: "Premium rice, cooking oils, grains & daily essentials." },
+    { name: "Fresh Produce & Bakery", hub: "Supermarket", count: 210, badge: "Daily Fresh", subcategories: ["Fresh Fruits", "Vegetables", "Artisanal Bread"], banner_img: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=1200&q=80", tagline: "DAILY FARM HARVEST", subtitle: "Artisanal breads, fresh fruits, vegetables & dairy." },
+    { name: "Beverages & Cold Drinks", hub: "Supermarket", count: 310, badge: "Chilled & Bulk", subcategories: ["Juices & Smoothies", "Mineral Water", "Energy & Soda Drinks"], banner_img: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=1200&q=80", tagline: "CHILLED & REFRESHING", subtitle: "Pure mineral water, fruit juices, malts & premium drinks." },
+    { name: "Household & Cleaning", hub: "Supermarket", count: 240, badge: "Hygiene Pack", subcategories: ["Laundry Detergents", "Toilet Papers", "Surface Cleaners"], banner_img: "https://images.unsplash.com/photo-1584555613497-9ecf7e3d0a4a?auto=format&fit=crop&w=1200&q=80", tagline: "DAILY CARE & ESSENTIALS", subtitle: "Quality laundry detergents, tissue papers & home care." },
+    { name: "Baby & Infant Essentials", hub: "Supermarket", count: 155, badge: "Gentle Care", subcategories: ["Diapers & Wipes", "Baby Food & Formula"], banner_img: "https://images.unsplash.com/photo-1604917019112-7d8f8d7c5c9f?auto=format&fit=crop&w=1200&q=80", tagline: "GENTLE CARE FOR BABIES", subtitle: "Diapers, formula milk, wipes & skincare." },
+    { name: "Snacks & Confectionery", hub: "Supermarket", count: 195, badge: "Sweet Treats", subcategories: ["Biscuits & Crackers", "Chocolates & Candy", "Chips"], banner_img: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&w=1200&q=80", tagline: "DELICIOUS TREATS", subtitle: "Imported chocolates, biscuits, nuts & crispy snacks." },
+    { name: "Frozen & Chilled Foods", hub: "Supermarket", count: 120, badge: "Cold Chain Logistics", subcategories: ["Frozen Poultry & Meat", "Seafood & Fish"], banner_img: "https://images.unsplash.com/photo-1588165171080-c89acfa5ee83?auto=format&fit=crop&w=1200&q=80", tagline: "COLD CHAIN FREIGHT", subtitle: "Frozen cuts, seafood & desserts in thermo storage." },
+    { name: "Stationery & Office Supplies", hub: "Mall", count: 280, badge: "Wholesale Superstore", subcategories: ["A4 Copy Paper", "Writing & Pens", "Notebooks"], banner_img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=1200&q=80", tagline: "OFFICE & SCHOOL SUPPLIES", subtitle: "A4 paper, notebooks, pens & commercial stationery." },
+    { name: "Electronics & Tech Mall", hub: "Mall", count: 185, badge: "Mall Outlet", subcategories: ["Smart 4K TVs", "Commercial Audio", "Kitchen Appliances"], banner_img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=1200&q=80", tagline: "MALL EXCLUSIVE TECH", subtitle: "Smart 4K TVs, home audio, appliances & electronics." },
+    { name: "Health & Personal Care", hub: "Mall", count: 220, badge: "Self Care", subcategories: ["Body Wash & Soap", "Haircare", "Oral Care"], banner_img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1200&q=80", tagline: "PERSONAL HEALTH & GLOW", subtitle: "Body washes, soaps, skincare & personal care." },
+    { name: "Home & Kitchen Living", hub: "Mall", count: 160, badge: "Home Style", subcategories: ["Cookware & Sets", "Food Storage", "Bedding"], banner_img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80", tagline: "MODERN HOME LIVING", subtitle: "Premium cookware, food containers & home decor." }
   ];
 
   const activeCategoriesSource = categoriesList.length > 0 ? categoriesList : fallbackCategories;
@@ -431,18 +432,9 @@ export function FullStorefront({ onOpenAdmin }) {
       <section className="bg-black border-b border-slate-800/80 px-4 py-6">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto no-scrollbar pb-2">
-            {[
-              { name: "Grocery & Food", count: 420 },
-              { name: "Home & Living", count: 160 },
-              { name: "Sport & Gym", count: 130 },
-              { name: "Electronics & Tech", count: 185 },
-              { name: "Furniture", count: 140 },
-              { name: "Luggage", count: 120 },
-              { name: "Toys", count: 95 },
-              { name: "Detergent & Care", count: 160 },
-              { name: "Hardware & Tools", count: 110 }
-            ].map((cat, idx) => {
+            {activeCategoriesSource.slice(0, 10).map((cat, idx) => {
               const isSelected = selectedCategory === cat.name;
+              const hasImage = Boolean(cat.banner_img);
               return (
                 <button
                   key={idx}
@@ -451,16 +443,22 @@ export function FullStorefront({ onOpenAdmin }) {
                     const el = document.getElementById('products-section');
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="flex flex-col items-center gap-2 group flex-shrink-0 cursor-pointer min-w-[72px]"
+                  className="flex flex-col items-center gap-2 group flex-shrink-0 cursor-pointer min-w-[76px]"
                 >
-                  <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 transition-all flex items-center justify-center p-2.5 shadow-xl group-hover:scale-110 ${
+                  <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 transition-all flex items-center justify-center shadow-xl group-hover:scale-110 overflow-hidden relative ${
                     isSelected
-                      ? 'bg-amber-400/20 border-amber-400 text-amber-300 ring-4 ring-amber-400/20'
-                      : 'bg-slate-900 border-slate-800 text-slate-300 group-hover:border-amber-400 group-hover:text-amber-400'
+                      ? 'border-amber-400 ring-4 ring-amber-400/30 scale-105'
+                      : 'border-slate-800 group-hover:border-amber-400'
                   }`}>
-                    {renderCategoryIcon(cat.name, "w-7 h-7 sm:w-8 sm:h-8")}
+                    {hasImage ? (
+                      <img src={cat.banner_img} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    ) : (
+                      <div className="bg-slate-900 w-full h-full flex items-center justify-center p-3 text-slate-300 group-hover:text-amber-400">
+                        {renderCategoryIcon(cat.name, "w-7 h-7 sm:w-8 sm:h-8")}
+                      </div>
+                    )}
                   </div>
-                  <span className="text-[11px] font-extrabold text-slate-300 group-hover:text-amber-400 transition-colors text-center line-clamp-1 max-w-[80px]">
+                  <span className="text-[11px] font-extrabold text-slate-300 group-hover:text-amber-400 transition-colors text-center line-clamp-1 max-w-[84px]">
                     {cat.name}
                   </span>
                 </button>
@@ -702,6 +700,50 @@ export function FullStorefront({ onOpenAdmin }) {
             Showing <b className="text-amber-400">{filteredProducts.length}</b> Superstore Items
           </span>
         </div>
+
+        {/* Dynamic Category Hero Banner Header (Admin Configurable) */}
+        {(() => {
+          const currentCatObj = activeCategoriesSource.find(
+            c => c.name.toLowerCase() === selectedCategory.toLowerCase() ||
+                 c.name.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+                 selectedCategory.toLowerCase().includes(c.name.toLowerCase())
+          ) || (selectedCategory !== 'All' ? {
+            name: selectedCategory,
+            tagline: 'FRESH OFF THE FLIGHT',
+            subtitle: 'Good Food, better life!!! Direct cold chain delivery.',
+            banner_img: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80'
+          } : activeCategoriesSource[0]);
+
+          if (!currentCatObj) return null;
+
+          const bannerImg = currentCatObj.banner_img || 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80';
+          const tagline = currentCatObj.tagline || 'FRESH OFF THE FLIGHT';
+          const subtitle = currentCatObj.subtitle || 'Good Food, better life!!! Direct cold chain delivery.';
+
+          return (
+            <div className="rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-black relative group my-4">
+              <div className="relative h-48 sm:h-64 lg:h-72 w-full overflow-hidden bg-slate-950">
+                <img
+                  src={bannerImg}
+                  alt={currentCatObj.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/65 to-transparent flex flex-col justify-center p-6 sm:p-10 lg:p-12">
+                  <span className="text-xs sm:text-sm font-black uppercase text-amber-400 tracking-widest mb-1.5 drop-shadow">
+                    {tagline}
+                  </span>
+                  <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight drop-shadow-md">
+                    {selectedCategory === 'All' ? currentCatObj.name : currentCatObj.name}
+                  </h2>
+                  <p className="text-xs sm:text-sm lg:text-base text-slate-300 max-w-xl mt-2 font-medium drop-shadow leading-relaxed">
+                    {subtitle}
+                  </p>
+                </div>
+              </div>
+              <div className="adinkra-pattern-border" />
+            </div>
+          );
+        })()}
 
         {/* Product Cards Grid with Palace Style Ribbons */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">

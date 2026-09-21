@@ -528,22 +528,22 @@ app.get('/api/depots', async (req, res) => {
 // Save or Update Category
 app.post('/api/categories', async (req, res) => {
   try {
-    const { id, name, hub, icon, count, badge, subcategories, banner_img } = req.body;
+    const { id, name, hub, icon, count, badge, subcategories, banner_img, tagline, subtitle } = req.body;
     const catName = name || 'New Category';
     const catHub = hub || 'Supermarket';
     const subJson = JSON.stringify(subcategories || []);
 
     if (id) {
       await dbRun(`
-        UPDATE categories SET name = ?, hub = ?, icon = ?, count = ?, badge = ?, subcategories = ?, banner_img = ?
+        UPDATE categories SET name = ?, hub = ?, icon = ?, count = ?, badge = ?, subcategories = ?, banner_img = ?, tagline = ?, subtitle = ?
         WHERE id = ?
-      `, [catName, catHub, icon || 'ShoppingBag', count || 0, badge || '', subJson, banner_img || '', id]);
+      `, [catName, catHub, icon || 'ShoppingBag', count || 0, badge || '', subJson, banner_img || '', tagline || '', subtitle || '', id]);
       res.json({ success: true, id, name: catName });
     } else {
       const result = await dbRun(`
-        INSERT INTO categories (name, hub, icon, count, badge, subcategories, banner_img)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `, [catName, catHub, icon || 'ShoppingBag', count || 0, badge || '', subJson, banner_img || '']);
+        INSERT INTO categories (name, hub, icon, count, badge, subcategories, banner_img, tagline, subtitle)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [catName, catHub, icon || 'ShoppingBag', count || 0, badge || '', subJson, banner_img || '', tagline || '', subtitle || '']);
       res.json({ success: true, id: result.lastID, name: catName });
     }
   } catch (err) {

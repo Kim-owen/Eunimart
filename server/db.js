@@ -63,9 +63,14 @@ export async function initDb() {
       count INTEGER DEFAULT 0,
       badge TEXT,
       subcategories TEXT,
-      banner_img TEXT
+      banner_img TEXT,
+      tagline TEXT,
+      subtitle TEXT
     )
   `);
+  try { await dbRun("ALTER TABLE categories ADD COLUMN banner_img TEXT"); } catch (e) {}
+  try { await dbRun("ALTER TABLE categories ADD COLUMN tagline TEXT"); } catch (e) {}
+  try { await dbRun("ALTER TABLE categories ADD COLUMN subtitle TEXT"); } catch (e) {}
 
   // Create Products table
   await dbRun(`
