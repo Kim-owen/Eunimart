@@ -308,459 +308,365 @@ export function FullStorefront({ onOpenAdmin }) {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950/80 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950 relative z-10 overflow-x-hidden backdrop-blur-[0.5px]">
+    <div className="min-h-screen bg-black text-slate-100 font-sans selection:bg-amber-400 selection:text-slate-950 relative z-10 overflow-x-hidden">
       
       {/* Emergency Maintenance Alert Banner */}
       {policies?.maintenanceMode && (
         <div className="bg-gradient-to-r from-amber-500 via-rose-500 to-amber-600 text-slate-950 px-4 py-2 text-xs font-black flex items-center justify-center gap-2 shadow-lg border-b border-amber-600">
           <AlertOctagon className="w-4 h-4 text-slate-950 animate-bounce" />
-          <span>SYSTEM NOTICE: {policies.maintenanceMessage || 'Factory Mall is currently undergoing scheduled inventory audit. Orders resume shortly.'}</span>
+          <span>SYSTEM NOTICE: {policies.maintenanceMessage || 'Palace Factory Superstore is currently undergoing inventory sync. Orders resume shortly.'}</span>
         </div>
       )}
 
-      {/* Palace-inspired Top Gold Accent Strip */}
-      <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-amber-400 to-teal-400" />
+      {/* Palace Top Gold Gradient Accent Strip */}
+      <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-amber-400 to-amber-500" />
 
       {/* Top Announcement Bar */}
-      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-500 text-slate-950 px-4 py-2 text-xs font-black">
+      <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-amber-400 px-4 py-2 text-xs font-bold border-b border-amber-500/20">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 truncate">
-            <span className="px-2.5 py-0.5 rounded-full bg-slate-950 text-emerald-400 text-[10px] uppercase font-black flex-shrink-0 border border-emerald-500/30">
-              {ticker?.badge || 'FACTORY DIRECT'}
+            <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black uppercase flex-shrink-0">
+              {ticker?.badge || 'PALACE ONLINE'}
             </span>
-            <span className="truncate">
-              {(ticker?.text || 'SAME-DAY EXPRESS FREIGHT DELIVERY ACROSS GREATER ACCRA & TEMA | USE CODE "FACTORY2026" FOR 10% OFF').replace(/⚡|📢|🎉|🏬|🛒|🏢|📦/g, '')}
+            <span className="truncate text-slate-300">
+              {(ticker?.text || 'FOR YOU, FOR YOURS, FOR GHANA | SAME-DAY EXPRESS FREIGHT DELIVERY ACROSS ACCRA & TEMA').replace(/⚡|📢|🎉|🏬|🛒|🏢|📦/g, '')}
             </span>
           </div>
 
           <div className="flex items-center gap-3 flex-shrink-0">
-            <div className="hidden md:flex items-center gap-1.5 text-[11px] bg-slate-950/20 px-3 py-1 rounded-full text-slate-950 font-black">
+            <div className="hidden md:flex items-center gap-1.5 text-[11px] bg-slate-900 px-3 py-1 rounded-full text-amber-400 font-black border border-amber-500/30">
               <MapPin className="w-3.5 h-3.5" />
               <span>{selectedLocation}</span>
             </div>
 
             <button
               onClick={onOpenAdmin}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950 text-emerald-400 hover:bg-slate-900 border border-slate-800 text-[11px] font-black transition-all shadow-md active:scale-95 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 text-[11px] font-black transition-all shadow-md active:scale-95 cursor-pointer"
             >
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>D2C Admin Portal</span>
-              <ExternalLink className="w-3 h-3 text-slate-400" />
+              <ExternalLink className="w-3 h-3" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Main Glassmorphic Header */}
-      <header className="sticky top-0 z-40 w-full bg-slate-950/85 backdrop-blur-2xl border-b border-slate-800/80 px-4 lg:px-8 py-3.5 transition-colors">
+      {/* Main Palace Header */}
+      <header className="sticky top-0 z-40 w-full bg-black/95 backdrop-blur-2xl border-b border-slate-800 px-4 lg:px-8 py-3.5 transition-colors">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           {/* Logo & Identity */}
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setSelectedHub('All'); setSelectedCategory('All'); }}>
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-amber-400 p-0.5 shadow-xl shadow-emerald-500/20 group-hover:scale-105 transition-all overflow-hidden">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-amber-500 to-emerald-400 p-0.5 shadow-xl shadow-amber-500/20 group-hover:scale-105 transition-all overflow-hidden">
               <img src="/factory_mall_logo.jpg" alt="Factory Mall Shopping Cart Logo" className="w-full h-full object-cover rounded-[14px]" />
             </div>
             <div>
               <h1 className="text-xl lg:text-2xl font-black text-white tracking-tight leading-none flex items-center gap-1.5">
-                FACTORY <span className="text-emerald-400">MALL</span>
+                PALACE <span className="text-amber-400">MALL</span>
               </h1>
-              <p className="text-[10px] text-amber-400 uppercase font-extrabold tracking-widest mt-1 flex items-center gap-1">
-                <span>For you, for yours, for Ghana</span>
+              <p className="text-[10px] text-amber-400 uppercase font-extrabold tracking-widest mt-1">
+                For you, for yours, for Ghana
               </p>
             </div>
           </div>
 
-          {/* Search Bar with Barcode Scanner Integration */}
+          {/* Search Bar with Barcode Scanner */}
           <div className="flex items-center flex-1 max-w-xl mx-2 sm:mx-4">
             <div className="relative w-full">
-              <Search className="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products, brands, groceries..."
-                className="w-full pl-8 sm:pl-10 pr-10 sm:pr-14 py-1.5 sm:py-2.5 text-[11px] sm:text-xs rounded-full bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 transition-all shadow-inner"
+                placeholder="Search products, brands..."
+                className="w-full pl-10 pr-12 py-2.5 text-xs rounded-full bg-slate-900/90 border border-slate-800 text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all shadow-inner"
               />
               <button
                 type="button"
                 onClick={() => toast.info('Barcode Scanner Active! Point camera at product barcode 📷')}
-                className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-amber-400 hover:text-amber-300 hover:bg-slate-800 transition-colors cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
                 title="Scan Barcode"
               >
-                <Zap className="w-3.5 h-3.5" />
+                <Zap className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Action Links */}
-          <div className="flex items-center gap-2 md:gap-3">
+          {/* Auth & Cart Actions */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
-              onClick={() => setIsTrackingOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition-all cursor-pointer"
+              onClick={() => toast.info('Sign In Modal')}
+              className="hidden sm:inline text-xs font-bold text-slate-300 hover:text-amber-400 transition-colors cursor-pointer"
             >
-              <Truck className="w-4 h-4 text-emerald-400" />
-              <span className="hidden md:inline">Track Freight</span>
+              Sign In
             </button>
 
             <button
-              onClick={() => setIsRfqOpen(true)}
-              className="hidden lg:flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition-all cursor-pointer"
+              onClick={() => toast.success('Welcome to Palace P-Club Rewards! 🎉')}
+              className="px-4 py-2 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-lg shadow-amber-400/20 transition-all active:scale-95 cursor-pointer"
             >
-              <FileText className="w-4 h-4 text-amber-400" />
-              <span>Pro-Forma RFQ</span>
+              Sign Up
             </button>
 
             {/* Glowing Cart Button Drawer Trigger */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 transition-all active:scale-95 cursor-pointer"
+              className="relative flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-900 border border-amber-500/40 hover:border-amber-400 text-white font-bold text-xs shadow-lg transition-all active:scale-95 cursor-pointer"
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-4 h-4 text-amber-400" />
               <span className="hidden sm:inline">Cart</span>
               {cart.length > 0 ? (
-                <span className="px-2 py-0.5 rounded-full bg-slate-950 text-emerald-400 text-[10px] font-black border border-emerald-500/30">
+                <span className="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black">
                   {cart.reduce((a, c) => a + c.qty, 0)}
                 </span>
               ) : (
-                <span className="text-[10px] font-mono text-slate-900 font-extrabold">GH₵ {cartSubtotal.toFixed(0)}</span>
+                <span className="text-[10px] font-mono text-amber-400 font-extrabold">GH₵ {cartSubtotal.toFixed(0)}</span>
               )}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Department Classification Hub Tabs */}
-      <div className="bg-slate-900/80 border-b border-slate-800/80 px-4 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 overflow-x-auto no-scrollbar">
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <button
-              onClick={() => {
-                setSelectedHub('All');
-                setSelectedCategory('All');
-              }}
-              className={`px-4 py-2 rounded-full text-xs font-black transition-all flex items-center gap-2 cursor-pointer ${
-                selectedHub === 'All'
-                  ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                  : 'bg-slate-800/90 text-slate-300 hover:text-white border border-slate-700'
-              }`}
-            >
-              <Store className="w-3.5 h-3.5" />
-              <span>All Superstore Catalog</span>
-            </button>
-            <button
-              onClick={() => {
-                setSelectedHub('Supermarket');
-                setSelectedCategory('All');
-              }}
-              className={`px-4 py-2 rounded-full text-xs font-black transition-all flex items-center gap-2 cursor-pointer ${
-                selectedHub === 'Supermarket'
-                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
-                  : 'bg-slate-800/90 text-slate-300 hover:text-white border border-slate-700'
-              }`}
-            >
-              <ShoppingBag className="w-3.5 h-3.5" />
-              <span>Supermarket Express (Groceries & Fresh)</span>
-            </button>
-            <button
-              onClick={() => {
-                setSelectedHub('Mall');
-                setSelectedCategory('All');
-              }}
-              className={`px-4 py-2 rounded-full text-xs font-black transition-all flex items-center gap-2 cursor-pointer ${
-                selectedHub === 'Mall'
-                  ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/20'
-                  : 'bg-slate-800/90 text-slate-300 hover:text-white border border-slate-700'
-              }`}
-            >
-              <Building2 className="w-3.5 h-3.5" />
-              <span>Online Shopping Mall (Tech & Office)</span>
-            </button>
-          </div>
-
-          <span className="text-xs font-bold text-slate-400 hidden xl:flex items-center gap-1.5">
-            <Package className="w-3.5 h-3.5 text-amber-400" />
-            <span>Minimum Order: GH₵ 20.00 • Bulk Rates Available</span>
-          </span>
-        </div>
-      </div>
-
-      {/* Hero Showcase Multi-Slide 60s Carousel */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950/40 py-10 md:py-14 px-4 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          
-          {/* Left Text & Call-To-Action Column */}
-          <div className="lg:col-span-7 space-y-4 text-center lg:text-left">
-            <div className="flex items-center justify-center lg:justify-start gap-2 flex-wrap">
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${
-                activeHeroSlide.badgeColor === 'emerald'
-                  ? 'bg-emerald-400/10 text-emerald-400 border-emerald-400/30'
-                  : activeHeroSlide.badgeColor === 'indigo'
-                  ? 'bg-indigo-400/10 text-indigo-400 border-indigo-400/30'
-                  : activeHeroSlide.badgeColor === 'rose'
-                  ? 'bg-rose-400/10 text-rose-400 border-rose-400/30'
-                  : 'bg-amber-400/10 text-amber-400 border-amber-400/30'
-              }`}>
-                <Sparkles className="w-3.5 h-3.5" /> {activeHeroSlide.badge || 'Direct Ghana Producer Wholesale Rates'}
-              </span>
-
-              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-slate-900 text-slate-400 border border-slate-800 flex items-center gap-1">
-                <Clock className="w-3 h-3 text-emerald-400" />
-                <span>SLIDE {currentHeroSlideIndex + 1} OF {heroSlides.length}</span>
-                <span className="text-emerald-400 ml-1">({heroCountdown}s)</span>
-              </span>
-            </div>
-
-            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight transition-all duration-300">
-              {activeHeroSlide.headline || 'Fresh Supermarket Groceries & Factory Goods at Wholesale Prices'}
-            </h2>
-
-            <p className="text-xs sm:text-sm text-slate-300 max-w-xl transition-all duration-300 leading-relaxed">
-              {activeHeroSlide.subheadline || 'Skip supermarket markups. Buy single items, wholesale cartons, or distributor pallets with instant Paystack Mobile Money settlement and 2-hour Accra freight dispatch.'}
-            </p>
-
-            <div className="pt-2 flex items-center justify-center lg:justify-start gap-3 flex-wrap">
-              <a
-                href="#products-section"
-                className="px-6 py-3 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-xl shadow-emerald-500/25 transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
-              >
-                <span>{activeHeroSlide.ctaText || 'Shop Wholesale Catalog'}</span>
-                <ArrowRight className="w-4 h-4" />
-              </a>
-
-              <button
-                onClick={onOpenAdmin}
-                className="px-5 py-3 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-bold text-xs transition-all flex items-center gap-2 cursor-pointer"
-              >
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>{activeHeroSlide.ctaSecondaryText || 'Open Admin Portal'}</span>
-              </button>
-            </div>
-
-            {/* Slide Indicator Dots & Navigation Arrows */}
-            <div className="pt-4 flex items-center justify-center lg:justify-start gap-4">
-              <div className="flex items-center gap-2 bg-slate-900/90 p-1.5 rounded-full border border-slate-800">
+      {/* Top Circular Category Bubbles Carousel */}
+      <section className="bg-black border-b border-slate-800/80 px-4 py-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto no-scrollbar pb-2">
+            {[
+              { name: "Grocery & Food", count: 420 },
+              { name: "Home & Living", count: 160 },
+              { name: "Sport & Gym", count: 130 },
+              { name: "Electronics & Tech", count: 185 },
+              { name: "Furniture", count: 140 },
+              { name: "Luggage", count: 120 },
+              { name: "Toys", count: 95 },
+              { name: "Detergent & Care", count: 160 },
+              { name: "Hardware & Tools", count: 110 }
+            ].map((cat, idx) => {
+              const isSelected = selectedCategory === cat.name;
+              return (
                 <button
-                  type="button"
+                  key={idx}
                   onClick={() => {
-                    setCurrentHeroSlideIndex((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
-                    setHeroCountdown(rotationSeconds);
+                    setSelectedCategory(isSelected ? 'All' : cat.name);
+                    const el = document.getElementById('products-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="p-1 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-all cursor-pointer"
-                  title="Previous Slide"
+                  className="flex flex-col items-center gap-2 group flex-shrink-0 cursor-pointer min-w-[72px]"
                 >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-
-                <div className="flex items-center gap-1.5 px-2">
-                  {heroSlides.map((_, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => {
-                        setCurrentHeroSlideIndex(idx);
-                        setHeroCountdown(rotationSeconds);
-                      }}
-                      className={`transition-all rounded-full cursor-pointer ${
-                        currentHeroSlideIndex === idx
-                          ? 'w-6 h-2 bg-emerald-400 shadow-sm'
-                          : 'w-2 h-2 bg-slate-700 hover:bg-slate-500'
-                      }`}
-                      title={`Go to Slide ${idx + 1}`}
-                    />
-                  ))}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCurrentHeroSlideIndex((prev) => (prev + 1) % heroSlides.length);
-                    setHeroCountdown(rotationSeconds);
-                  }}
-                  className="p-1 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-all cursor-pointer"
-                  title="Next Slide"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-
-              <span className="text-[11px] text-slate-400 hidden sm:inline">
-                Auto-cycles every {rotationSeconds}s
-              </span>
-            </div>
-          </div>
-
-          {/* Right Media Frame Column */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-900 group">
-              
-              {/* 60s Linear Progress Line */}
-              {heroMedia?.autoRotate !== false && (
-                <div className="absolute top-0 left-0 right-0 h-1 bg-white/20 z-30 overflow-hidden pointer-events-none">
-                  <div
-                    className="h-full bg-emerald-400 transition-all duration-1000 ease-linear"
-                    style={{ width: `${((rotationSeconds - heroCountdown) / rotationSeconds) * 100}%` }}
-                  />
-                </div>
-              )}
-
-              {/* Video or Image Canvas */}
-              {activeHeroSlide.type === 'video' && activeHeroSlide.videoUrl ? (
-                <video
-                  key={activeHeroSlide.videoUrl}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  poster={activeHeroSlide.posterUrl || undefined}
-                  src={activeHeroSlide.videoUrl}
-                  className="w-full h-80 sm:h-96 object-cover transition-opacity duration-500"
-                />
-              ) : activeHeroSlide.posterUrl ? (
-                <img
-                  key={activeHeroSlide.posterUrl}
-                  src={activeHeroSlide.posterUrl}
-                  alt={activeHeroSlide.headline || 'Factory Mall Showcase'}
-                  className="w-full h-80 sm:h-96 object-cover transition-opacity duration-500"
-                />
-              ) : (
-                <div className="w-full h-80 sm:h-96 flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-8 text-center border border-slate-800/80">
-                  <div className="w-16 h-16 rounded-2xl bg-emerald-400/10 border border-emerald-400/30 text-emerald-400 flex items-center justify-center mb-4">
-                    <Store className="w-8 h-8" />
+                  <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 transition-all flex items-center justify-center p-2.5 shadow-xl group-hover:scale-110 ${
+                    isSelected
+                      ? 'bg-amber-400/20 border-amber-400 text-amber-300 ring-4 ring-amber-400/20'
+                      : 'bg-slate-900 border-slate-800 text-slate-300 group-hover:border-amber-400 group-hover:text-amber-400'
+                  }`}>
+                    {renderCategoryIcon(cat.name, "w-7 h-7 sm:w-8 sm:h-8")}
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-slate-900 text-emerald-400 text-xs font-black uppercase tracking-wider mb-2 border border-emerald-400/20">
-                    {activeHeroSlide.badge || 'FACTORY MALL DIRECT'}
+                  <span className="text-[11px] font-extrabold text-slate-300 group-hover:text-amber-400 transition-colors text-center line-clamp-1 max-w-[80px]">
+                    {cat.name}
                   </span>
-                  <h3 className="text-xl font-black text-white max-w-sm">
-                    {activeHeroSlide.headline || 'Ghana Wholesale & Supermarket Direct'}
-                  </h3>
-                </div>
-              )}
-
-              {/* In-Frame Bottom Snippet Card */}
-              <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-slate-800 flex items-center justify-between z-20">
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 font-bold">Featured Factory Direct</span>
-                  <p className="text-xs font-bold text-white">Royal Aroma Fragrant Rice 5kg</p>
-                  <p className="text-xs text-emerald-400 font-black">GH₵ 115.00 <span className="text-[10px] text-slate-400 line-through">GH₵ 135.00</span></p>
-                </div>
-                <button
-                  onClick={() => addToCart(products[0] || { id: 'p1', title: 'Royal Aroma Rice 5kg', price: 115, image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=800&q=80' })}
-                  className="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/20 active:scale-95 transition-all cursor-pointer"
-                >
-                  + Add
                 </button>
-              </div>
-            </div>
+              );
+            })}
           </div>
-
         </div>
       </section>
 
-      {/* Category Departments Grid Showcase */}
-      <section className="max-w-7xl mx-auto px-4 pt-8 pb-2">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/30 text-[10px] font-black uppercase tracking-wider">
-                Factory Mall Taxonomy
+      {/* Palace Hero Showcase Multi-Slide Promo Canvas */}
+      <section className="max-w-7xl mx-auto px-4 pt-6 pb-4">
+        <div className="relative rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-black group">
+          <div className="relative h-64 sm:h-96 w-full overflow-hidden">
+            <img
+              src={activeHeroSlide.posterUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1600&q=80'}
+              alt={activeHeroSlide.headline || 'Palace Quality Promo'}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent flex flex-col justify-center p-6 sm:p-12">
+              <span className="px-3.5 py-1 rounded-full bg-amber-400 text-slate-950 text-xs font-black uppercase tracking-wider w-max mb-3 shadow-md">
+                {activeHeroSlide.badge || 'QUALITY OILS • For a Healthier Tomorrow'}
               </span>
-              <span className="text-xs text-slate-400 font-mono">
-                {filteredCategories.length} Departments Available
-              </span>
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white max-w-lg leading-tight tracking-tight drop-shadow-md">
+                {activeHeroSlide.headline || 'Pure & Natural • Healthy Living • Trusted Quality'}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 max-w-md mt-2 line-clamp-2 drop-shadow">
+                {activeHeroSlide.subheadline || 'Explore top-tier imported oils, fresh cuts, and daily grocery staples delivered across Accra.'}
+              </p>
+              <div className="mt-5 flex items-center gap-3">
+                <a
+                  href="#doorbuster-section"
+                  className="px-6 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-xl active:scale-95 transition-all cursor-pointer"
+                >
+                  Shop Doorbuster Deals →
+                </a>
+              </div>
             </div>
-            <h3 className="text-2xl font-black text-white tracking-tight">
-              Browse Wholesale Departments
-            </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Select any category to filter factory pricing, carton rates, and pallet bulk discounts.
-            </p>
-          </div>
 
-          <div className="flex items-center gap-2">
+            {/* Left/Right Carousel Arrows */}
             <button
-              onClick={() => setSelectedCategory('All')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                selectedCategory === 'All'
-                  ? 'bg-emerald-500 text-slate-950 font-black shadow-md'
-                  : 'bg-slate-800 text-slate-300 hover:text-white'
-              }`}
+              onClick={() => setCurrentHeroSlideIndex((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-950/80 hover:bg-slate-950 border border-slate-700 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg"
             >
-              View All ({products.length})
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setCurrentHeroSlideIndex((prev) => (prev + 1) % heroSlides.length)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-950/80 hover:bg-slate-950 border border-slate-700 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg"
+            >
+              <ChevronRight className="w-5 h-5" />
             </button>
           </div>
+          <div className="adinkra-pattern-border" />
         </div>
+      </section>
 
-        {/* Categories Showcase Cards */}
-        <div id="categories-section" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3.5">
-          {filteredCategories.map((cat, idx) => {
-            const isSelected = selectedCategory === cat.name;
-            const count = cat.count || products.filter(p => p.category === cat.name).length;
-            const cardGradients = [
-              'from-emerald-500/10 to-teal-500/5 border-emerald-500/30',
-              'from-amber-500/10 to-orange-500/5 border-amber-500/30',
-              'from-purple-500/10 to-indigo-500/5 border-purple-500/30',
-              'from-pink-500/10 to-rose-500/5 border-pink-500/30',
-              'from-cyan-500/10 to-blue-500/5 border-cyan-500/30',
-              'from-violet-500/10 to-fuchsia-500/5 border-violet-500/30'
-            ];
-            const themeGradient = cardGradients[idx % cardGradients.length];
+      {/* P-Club Doorbuster Section with Live Countdown Timers */}
+      <section id="doorbuster-section" className="max-w-7xl mx-auto px-4 py-6">
+        <div className="rounded-3xl bg-slate-950/90 border border-amber-500/30 p-5 sm:p-8 shadow-2xl space-y-6">
+          
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-400 border border-amber-400/40 text-[10px] font-black uppercase tracking-wider">
+                  Palace Exclusive Flash Sale
+                </span>
+                <span className="text-xs text-slate-400 font-mono">18th - 21st September</span>
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
+                P-Club Doorbuster
+              </h3>
+            </div>
 
-            return (
-              <button
-                key={cat.id || cat.name}
-                onClick={() => {
-                  setSelectedCategory(isSelected ? 'All' : cat.name);
-                  const el = document.getElementById('products-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className={`relative group rounded-2xl p-2.5 sm:p-3.5 text-left border transition-all flex flex-col justify-between overflow-hidden min-h-[95px] sm:min-h-[130px] cursor-pointer shadow-lg active:scale-95 ${
-                  isSelected
-                    ? 'bg-slate-800 border-emerald-400 ring-2 ring-emerald-400/40 shadow-emerald-400/20'
-                    : `bg-gradient-to-br ${themeGradient} hover:bg-slate-800/90`
-                }`}
-              >
-                {cat.banner_img && cat.banner_img.trim() !== '' && (
-                  <div className="absolute inset-0 opacity-15 group-hover:opacity-30 transition-opacity">
-                    <img src={cat.banner_img} alt={cat.name} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent" />
-                  </div>
-                )}
+            {/* Live Gold Countdown Timer Boxes */}
+            <div className="flex items-center gap-2 font-mono">
+              <div className="countdown-box">
+                <span className="text-lg font-black text-amber-400 block">00</span>
+                <span className="text-[9px] text-slate-400 uppercase font-extrabold">DAYS</span>
+              </div>
+              <span className="text-amber-400 font-black text-lg">:</span>
+              <div className="countdown-box">
+                <span className="text-lg font-black text-amber-400 block">03</span>
+                <span className="text-[9px] text-slate-400 uppercase font-extrabold">HRS</span>
+              </div>
+              <span className="text-amber-400 font-black text-lg">:</span>
+              <div className="countdown-box">
+                <span className="text-lg font-black text-amber-400 block">07</span>
+                <span className="text-[9px] text-slate-400 uppercase font-extrabold">MINS</span>
+              </div>
+              <span className="text-amber-400 font-black text-lg">:</span>
+              <div className="countdown-box">
+                <span className="text-lg font-black text-amber-400 block">42</span>
+                <span className="text-[9px] text-slate-400 uppercase font-extrabold">SECS</span>
+              </div>
 
-                <div className="relative z-10 space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-950/80 border border-slate-700/80 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-400 group-hover:text-slate-950 transition-all duration-300 shadow-md">
-                      {renderCategoryIcon(cat.name, "w-4 h-4 sm:w-4.5 sm:h-4.5")}
+              <a href="#products-section" className="ml-3 text-xs font-bold text-amber-400 hover:underline flex items-center gap-1">
+                View All →
+              </a>
+            </div>
+          </div>
+
+          {/* Doorbuster Product Cards Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+            {filteredProducts.slice(0, 6).map((product, idx) => {
+              const activeTier = getProductTier(product);
+              const ribbonPrices = ["GH₵ 34.99", "GH₵ 27.99", "GH₵ 17.99", "GH₵ 120.99", "GH₵ 99.99", "GH₵ 24.99"];
+              const ribbonPrice = ribbonPrices[idx % ribbonPrices.length];
+
+              return (
+                <div
+                  key={product.id}
+                  className="group rounded-2xl bg-slate-900 border border-slate-800 hover:border-amber-400/50 p-2.5 transition-all duration-300 flex flex-col justify-between shadow-xl relative overflow-hidden"
+                >
+                  <div className="space-y-2">
+                    {/* Palace White Image Container with Diagonal Gold Ribbon */}
+                    <div className="relative h-36 sm:h-40 rounded-xl overflow-hidden bg-white p-2 flex items-center justify-center">
+                      <div className="price-ribbon-gold">{ribbonPrice}</div>
+                      <img
+                        src={product.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80'}
+                        alt={product.title}
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFavorite(product.id);
+                        }}
+                        className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-slate-950/80 text-slate-300 hover:text-rose-400 flex items-center justify-center transition-all cursor-pointer shadow-md"
+                      >
+                        <Heart className={`w-3.5 h-3.5 ${favorites[product.id] ? 'text-rose-400 fill-rose-500' : ''}`} />
+                      </button>
                     </div>
-                    <span className={`text-[8px] sm:text-[9px] font-black uppercase px-2 py-0.5 rounded-full font-mono shadow-sm ${
-                      cat.hub === 'Supermarket'
-                        ? 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/40'
-                        : 'bg-indigo-400/20 text-indigo-300 border border-indigo-400/40'
-                    }`}>
-                      {cat.hub === 'Supermarket' ? '🏬 STORE' : '🛍️ MALL'}
-                    </span>
-                  </div>
-                  <h4 className="text-[11px] sm:text-xs font-black text-white line-clamp-1 sm:line-clamp-2 leading-tight group-hover:text-emerald-400 transition-colors pt-0.5">
-                    {cat.name}
-                  </h4>
-                </div>
 
-                <div className="relative z-10 pt-1.5 border-t border-slate-800/60 flex items-center justify-between mt-auto">
-                  <span className="text-[9px] sm:text-[10px] text-slate-300 font-bold flex items-center gap-1">
-                    <Sparkles className="w-2.5 h-2.5 text-amber-400" />
-                    <span>{count} {count === 1 ? 'Item' : 'Items'}</span>
-                  </span>
-                  {isSelected && (
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                  )}
+                    <h4 className="text-xs font-black text-white uppercase tracking-tight line-clamp-2 leading-tight group-hover:text-amber-400 transition-colors">
+                      {product.title}
+                    </h4>
+                  </div>
+
+                  <div className="pt-2 mt-2 border-t border-slate-800/80 flex items-center justify-between gap-1">
+                    <span className="text-xs sm:text-sm font-black text-amber-400">
+                      GH₵ {activeTier.price.toFixed(2)}
+                    </span>
+                    <button
+                      onClick={() => addToCart(product)}
+                      className="w-7 h-7 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black flex items-center justify-center shadow-md active:scale-95 transition-all cursor-pointer"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-              </button>
-            );
-          })}
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Categorized Showcase 1: Meat, Poultry & Fish */}
+      <section className="max-w-7xl mx-auto px-4 py-6">
+        <div className="rounded-3xl overflow-hidden border border-slate-800 bg-slate-950 shadow-2xl">
+          <div className="relative h-44 sm:h-56 w-full overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1600&q=80"
+              alt="Meat, Poultry & Fish"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent flex flex-col justify-center p-6 sm:p-10">
+              <span className="text-amber-400 font-mono font-bold text-xs uppercase tracking-widest mb-1">FRESH OFF THE FLIGHT</span>
+              <h3 className="text-2xl sm:text-4xl font-black text-white tracking-tight">Meat, Poultry & Fish</h3>
+              <p className="text-xs text-slate-300 mt-1">Good Food, better life!!! Direct cold chain delivery.</p>
+            </div>
+          </div>
+          <div className="adinkra-pattern-border" />
+
+          <div className="p-4 sm:p-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+            {filteredProducts.slice(0, 6).map((product, idx) => {
+              const activeTier = getProductTier(product);
+              return (
+                <div key={product.id} className="group rounded-2xl bg-slate-900 border border-slate-800 hover:border-amber-400/50 p-2.5 transition-all duration-300 flex flex-col justify-between shadow-xl relative overflow-hidden">
+                  <div className="space-y-2">
+                    <div className="relative h-36 sm:h-40 rounded-xl overflow-hidden bg-white p-2 flex items-center justify-center">
+                      <div className="price-ribbon-gold">GH₵ {(activeTier.price * 1.15).toFixed(2)}</div>
+                      <img src={product.image || 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80'} alt={product.title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
+                      <button onClick={(e) => { e.stopPropagation(); toggleFavorite(product.id); }} className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-slate-950/80 text-slate-300 hover:text-rose-400 flex items-center justify-center transition-all cursor-pointer">
+                        <Heart className={`w-3.5 h-3.5 ${favorites[product.id] ? 'text-rose-400 fill-rose-500' : ''}`} />
+                      </button>
+                    </div>
+                    <h4 className="text-xs font-black text-white uppercase tracking-tight line-clamp-2 leading-tight group-hover:text-amber-400 transition-colors">
+                      {product.title}
+                    </h4>
+                  </div>
+                  <div className="pt-2 mt-2 border-t border-slate-800/80 flex items-center justify-between gap-1">
+                    <span className="text-xs sm:text-sm font-black text-amber-400">GH₵ {activeTier.price.toFixed(2)}</span>
+                    <button onClick={() => addToCart(product)} className="w-7 h-7 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black flex items-center justify-center shadow-md cursor-pointer">
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
       {/* Main Catalog Section */}
-      <main id="products-section" className="max-w-7xl mx-auto px-4 py-10 space-y-8">
+      <main id="products-section" className="max-w-7xl mx-auto px-4 py-8 space-y-8">
         
         {/* Category Filters Pill Strip */}
         <div className="flex items-center justify-between gap-4 flex-wrap border-b border-slate-800 pb-4">
@@ -769,21 +675,21 @@ export function FullStorefront({ onOpenAdmin }) {
               <button
                 key={cat.name}
                 onClick={() => setSelectedCategory(cat.name)}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer ${
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-bold transition-all flex-shrink-0 cursor-pointer ${
                   selectedCategory === cat.name
-                    ? 'bg-slate-800 text-emerald-400 border border-emerald-400/40 shadow-sm'
-                    : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
+                    ? 'bg-amber-400 text-slate-950 font-black shadow-md'
+                    : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
                 }`}
               >
                 {cat.name === 'All' ? (
-                  <LayoutGrid className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                  <LayoutGrid className="w-3.5 h-3.5 text-slate-950 flex-shrink-0" />
                 ) : (
-                  <span className="text-emerald-400 flex-shrink-0">{renderCategoryIcon(cat.name, "w-3.5 h-3.5")}</span>
+                  <span className="flex-shrink-0">{renderCategoryIcon(cat.name, "w-3.5 h-3.5")}</span>
                 )}
                 <span>{cat.label}</span>
                 {cat.count > 0 && (
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono font-bold ${
-                    selectedCategory === cat.name ? 'bg-emerald-400/20 text-emerald-400' : 'bg-slate-800 text-slate-400'
+                    selectedCategory === cat.name ? 'bg-slate-950 text-amber-400' : 'bg-slate-800 text-slate-400'
                   }`}>
                     {cat.count}
                   </span>
@@ -793,116 +699,56 @@ export function FullStorefront({ onOpenAdmin }) {
           </div>
 
           <span className="text-xs text-slate-400 font-medium">
-            Showing <b className="text-white">{filteredProducts.length}</b> Factory Products
+            Showing <b className="text-amber-400">{filteredProducts.length}</b> Superstore Items
           </span>
         </div>
 
-        {/* Product Cards Grid with Interactive Wholesale Tier Selectors */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6">
-          {filteredProducts.map(product => {
+        {/* Product Cards Grid with Palace Style Ribbons */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          {filteredProducts.map((product, idx) => {
             const activeTier = getProductTier(product);
-            const tiers = product.tiers || [
-              { id: 'unit', label: 'Single Unit', price: product.price || 100, retailPrice: (product.price || 100) * 1.25, savings: '' }
-            ];
+            const ribbonPrices = ["GH₵ 34.99", "GH₵ 27.99", "GH₵ 17.99", "GH₵ 120.99", "GH₵ 99.99", "GH₵ 24.99"];
+            const ribbonPrice = ribbonPrices[idx % ribbonPrices.length];
 
             return (
               <div
                 key={product.id}
-                className="group rounded-2xl sm:rounded-3xl bg-slate-900/80 border border-slate-800/80 hover:border-emerald-400/40 p-2.5 sm:p-4 transition-all duration-300 flex flex-col justify-between shadow-xl"
+                className="group rounded-2xl bg-slate-900 border border-slate-800 hover:border-amber-400/50 p-2.5 transition-all duration-300 flex flex-col justify-between shadow-xl relative overflow-hidden"
               >
-                <div className="space-y-2 sm:space-y-3">
-                  {/* Image Container */}
-                  <div className="relative h-32 sm:h-48 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-950 border border-slate-800/60">
+                <div className="space-y-2">
+                  <div className="relative h-36 sm:h-40 rounded-xl overflow-hidden bg-white p-2 flex items-center justify-center">
+                    <div className="price-ribbon-gold">{ribbonPrice}</div>
                     <img
                       src={product.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80'}
                       alt={product.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80';
-                      }}
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                     />
-                    <span className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 text-[8px] sm:text-[10px] font-black px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-emerald-400 border border-emerald-400/30 truncate max-w-[85px] sm:max-w-none">
-                      {product.category}
-                    </span>
-
-                    {/* Cute Heart Wishlist Toggle Button */}
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleFavorite(product.id);
-                        toast.success(favorites[product.id] ? 'Removed from Wishlist 💔' : 'Added to Wishlist! 💖');
                       }}
-                      className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 p-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-slate-700/60 text-slate-400 hover:text-rose-400 transition-all active:scale-125 cursor-pointer shadow-md"
+                      className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-slate-950/80 text-slate-300 hover:text-rose-400 flex items-center justify-center transition-all cursor-pointer shadow-md"
                     >
-                      <Heart className={`w-3.5 h-3.5 ${favorites[product.id] ? 'text-rose-400 fill-rose-500 animate-bounce' : 'text-slate-400'}`} />
+                      <Heart className={`w-3.5 h-3.5 ${favorites[product.id] ? 'text-rose-400 fill-rose-500' : ''}`} />
                     </button>
-
-                    {product.isHot && (
-                      <span className="absolute bottom-2 left-2 z-10 text-[8px] sm:text-[10px] font-black px-1.5 py-0.5 rounded-full bg-rose-500/90 backdrop-blur-md text-white flex items-center gap-0.5 shadow-md">
-                        <Flame className="w-2.5 h-2.5" /> HOT
-                      </span>
-                    )}
                   </div>
 
-                  {/* Title & Brand */}
-                  <div>
-                    <span className="text-[9px] sm:text-[11px] text-slate-400 font-mono block truncate">
-                      {product.factory || 'Ghana Direct Producer'}
-                    </span>
-                    <h3 className="text-xs sm:text-sm font-extrabold text-white leading-tight line-clamp-1 sm:line-clamp-2 mt-0.5 group-hover:text-emerald-400 transition-colors">
-                      {product.title}
-                    </h3>
-                  </div>
-
-                  {/* Pricing Tiers Radio Toggle */}
-                  <div className="space-y-1 pt-0.5">
-                    <span className="text-[9px] sm:text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">
-                      Select Tier:
-                    </span>
-                    <div className="space-y-1">
-                      {tiers.map(t => (
-                        <button
-                          key={t.id}
-                          type="button"
-                          onClick={() => handleSelectTier(product.id, t.id)}
-                          className={`w-full text-left p-1.5 sm:p-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs flex items-center justify-between border transition-all cursor-pointer ${
-                            activeTier.id === t.id
-                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-400/50 font-bold shadow-sm'
-                              : 'bg-slate-800/50 text-slate-400 border-slate-800 hover:text-slate-200'
-                          }`}
-                        >
-                          <span className="truncate pr-1">{t.label}</span>
-                          <span className="font-mono font-black flex-shrink-0">
-                            GH₵ {t.price.toFixed(2)}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  <h4 className="text-xs font-black text-white uppercase tracking-tight line-clamp-2 leading-tight group-hover:text-amber-400 transition-colors">
+                    {product.title}
+                  </h4>
                 </div>
 
-                {/* Price Display & Add Button */}
-                <div className="pt-2 sm:pt-4 mt-2 sm:mt-4 border-t border-slate-800/80 flex items-center justify-between gap-1">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs sm:text-base font-black text-emerald-400 truncate">
-                        GH₵ {activeTier.price.toFixed(2)}
-                      </span>
-                    </div>
-                    {activeTier.savings && (
-                      <span className="text-[8px] sm:text-[10px] font-black text-amber-400 block truncate">
-                        {activeTier.savings}
-                      </span>
-                    )}
-                  </div>
-
+                <div className="pt-2 mt-2 border-t border-slate-800/80 flex items-center justify-between gap-1">
+                  <span className="text-xs sm:text-sm font-black text-amber-400">
+                    GH₵ {activeTier.price.toFixed(2)}
+                  </span>
                   <button
                     onClick={() => addToCart(product)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[11px] sm:text-xs shadow-md shadow-emerald-500/20 transition-all active:scale-95 cursor-pointer flex-shrink-0"
+                    className="w-7 h-7 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black flex items-center justify-center shadow-md active:scale-95 transition-all cursor-pointer"
                   >
-                    <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                    <span>Add</span>
+                    <Plus className="w-4 h-4" />
                   </button>
                 </div>
               </div>
